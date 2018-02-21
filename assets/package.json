@@ -4,8 +4,7 @@
   "scripts": {
     "deploy": "brunch build --production",
     "coverage": "mix coveralls",
-    "watch": "brunch watch --stdin",
-    "lint": "mix credo --strict"
+    "watch": "brunch watch --stdin"
   },
   "dependencies": {
     "phoenix": "file:../deps/phoenix",
@@ -16,9 +15,5 @@
     "brunch": "2.10.9",
     "clean-css-brunch": "2.10.0",
     "uglify-js-brunch": "2.10.0"
-  },
-  "pre-commit": [
-  "coverage",
-  "lint"
-  ]
+  }
 }

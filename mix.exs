@@ -45,7 +45,8 @@ defmodule App.Mixfile do
       {:cowboy, "~> 1.0"},
       {:poison, "~> 3.1"},
       {:excoveralls, "~> 0.8", only: :test},
-      {:credo, "~> 0.3", only: [:dev, :test]}
+      {:credo, "~> 0.3", only: [:dev, :test]},
+      {:pre_commit, "~> 0.2.4", only: :dev}
     ]
   end
 
