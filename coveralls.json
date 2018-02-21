@@ -1,0 +1,14 @@
+{
+  "coverage_options": {
+    "minimum_coverage": 60
+  },
+  "skip_files": [
+    "lib/app_web.ex",
+    "test/support/channel_case.ex",
+    "test/support/conn_case.ex",
+    "web/web.ex",
+    "web/views/error_helpers.ex",
+    "test/support/data_case.ex",
+    "lib/app_web/endpoint.ex"
+  ]
+}
