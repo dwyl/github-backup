@@ -3,11 +3,7 @@ defmodule AppWeb.EventType do
   Determines the type of event received by the Github Webhooks requests
   """
 
-  def event_type(conn, payload) do
-    action = payload["action"]
-    headers = Enum.into(conn.req_headers, %{})
-    x_github_event = Map.get(headers, "x-github-event")
-
+  def get_event_type(x_github_event, action) do
     case x_github_event do
       "installation" -> type("installation", action)
       "installation_repositories" -> type("installation_repositories", action)
@@ -31,6 +27,7 @@ defmodule AppWeb.EventType do
 
   defp type("issues", action) do
     case action do
+      "created" -> :issue_created
       "edited" -> :issue_edited
       "closed" -> :issue_closed
       "reopened" -> :issue_reopened
@@ -39,8 +36,8 @@ defmodule AppWeb.EventType do
 
   defp type("issue_comment", action) do
     case action do
-      "edited" -> :comment_created
-      "closed" -> :comment_edited
+      "created" -> :comment_created
+      "edited" -> :comment_edited
       "deleted" -> :comment_deleted
     end
   end
