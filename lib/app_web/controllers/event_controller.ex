@@ -14,8 +14,6 @@ defmodule AppWeb.EventController do
         issues = @github_api.get_issues(token, payload)
         comments = @github_api.get_comments(token, payload)
 
-      :issue_edited -> nil
-
       _ -> nil
     end
 
