@@ -51,6 +51,13 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> PP.parse!
   end
 
+  def get_comments(token, payload) do
+    "#{@github_root}/repos/#{payload["repository"]["full_name"]}/issues/comments"
+    |> HTTPoison.get!(header(token), [])
+    |> Map.fetch!(:body)
+    |> PP.parse!
+  end
+
   # def get_pull_requests(token, payload, rule_name) do
   #   "#{@github_root}/repos/#{payload["repository"]["full_name"]}/pulls"
   #   |> HTTPoison.get!(header(token), [])
