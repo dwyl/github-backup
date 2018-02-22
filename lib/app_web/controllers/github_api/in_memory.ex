@@ -8,4 +8,8 @@ defmodule AppWeb.GithubAPI.InMemory do
     "token_installation_1234"
   end
 
+  def get_issues(_token, _payload) do
+    []
+  end
+
 end
