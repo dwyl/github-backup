@@ -24,6 +24,8 @@ config :app, App.Repo,
   url: System.get_env("DATABASE_URL"),
   pool_size: String.to_integer(System.get_env("POOL_SIZE") || "10"),
   ssl: true
+  
+config :app, :github_api, AppWeb.GithubAPI.HTTPClient
 
 # Do not print debug messages in production
 config :logger, level: :info
