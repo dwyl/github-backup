@@ -58,18 +58,4 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> PP.parse!
   end
 
-  # def get_pull_requests(token, payload, rule_name) do
-  #   "#{@github_root}/repos/#{payload["repository"]["full_name"]}/pulls"
-  #   |> HTTPoison.get!(header(token), [])
-  #   |> Map.fetch!(:body)
-  #   |> PP.parse!
-  #   |> Enum.map(fn(pr) ->
-  #     urls = %{
-  #       "issue" => pr["issue_url"],
-  #       "pull_request" => pr["url"]
-  #     }
-  #     get_data(token, urls, rule_name)
-  #   end)
-  # end
-
 end
