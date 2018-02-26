@@ -4,7 +4,7 @@ defmodule AppWeb.EventTestController do
   alias Plug.Conn
 
   @fixtures [
-    %{payload: "installation", event: "integration_installation"}
+    %{payload: "installation", event: "installation"}
   ]
   |> Enum.map(&(%{&1 | payload: "./test/fixtures/#{&1.payload}.json"}))
 

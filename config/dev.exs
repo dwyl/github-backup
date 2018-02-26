@@ -56,3 +56,5 @@ config :app, App.Repo,
   database: "app_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :app, :github_api, AppWeb.GithubAPI.HTTPClient

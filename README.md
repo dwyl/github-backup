@@ -114,9 +114,13 @@ The `github-backup` server will receive events from Github and then save the det
   ```
   # SECRET_KEY_BASE is required for Auth Cookie:
   export SECRET_KEY_BASE=MustBeA64ByteStringProbablyBestToGenerateUsingCryptoOrJustUseThisWithSomeRandomDigitsOnTheEnd1234567890
+  # PRIVATE_KEY should be generated in your github app settings
+  export PRIVATE_KEY=YOUR_PRIVATE_KEY
+  # Your GITHUB_APP_ID is found in the settings of your github app under General > About
+  export GITHUB_APP_ID=YOUR_GITHUB_APP_ID
   ```
 
-  You can generate a new secrete key base with ```mix phoenix.gen.secret```.
+  You can generate a new secret key base with ```mix phoenix.gen.secret```.
 
   Then execute the command ```source .env``` which will create your environment variables
 

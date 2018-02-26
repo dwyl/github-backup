@@ -44,9 +44,12 @@ defmodule App.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:poison, "~> 3.1"},
+      {:httpoison, "~> 1.0"},
       {:excoveralls, "~> 0.8", only: :test},
       {:credo, "~> 0.3", only: [:dev, :test]},
-      {:pre_commit, "~> 0.2.4", only: :dev}
+      {:pre_commit, "~> 0.2.4", only: :dev},
+      {:joken, "~> 1.5"},
+      {:jose, "~> 1.8"}
     ]
   end
 
