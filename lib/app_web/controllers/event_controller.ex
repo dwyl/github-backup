@@ -14,7 +14,15 @@ defmodule AppWeb.EventController do
         issues = @github_api.get_issues(token, payload)
         comments = @github_api.get_comments(token, payload)
 
-      _ -> nil
+      :issue_edited ->
+        token = @github_api.get_installation_token(payload["installation"]["id"])
+        issues = @github_api.get_issues(token, payload)
+                 |> Enum.filter(fn i -> !Map.has_key?(i, "pull_request")end )
+        # IO.inspect "********************************"
+        # IO.inspect issues
+        # IO.inspect "%%%%%%%%%%%"
+        # IO.inspect length(issues)
+        # IO.inspect "********************************"
     end
 
     conn
