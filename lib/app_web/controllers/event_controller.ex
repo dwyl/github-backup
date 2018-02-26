@@ -1,12 +1,18 @@
 defmodule AppWeb.EventController do
   use AppWeb, :controller
   alias AppWeb.EventType
+  alias AppWeb.AWS.S3
 
   @github_api Application.get_env(:app, :github_api)
 
   def new(conn, payload) do
     headers = Enum.into(conn.req_headers, %{})
     x_github_event = Map.get(headers, "x-github-event")
+
+# Was originally tryig to get the payload data in order to save it in here. Since
+# Doing JC's tutorial I now also have an upload controller and so perhaps this
+# should happen there?
+    S3.saveToS3(payload)
 
     case EventType.get_event_type(x_github_event, payload["action"]) do
       :new_installation ->

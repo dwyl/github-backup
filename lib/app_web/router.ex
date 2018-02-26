@@ -24,6 +24,15 @@ defmodule AppWeb.Router do
 
     post "/new", EventController, :new
   end
+
+# Code is the wrong color and is erroring, not sure why. Tried putting this
+# inside the existing scope for '/' but it still didn't work
+# Code from JC tutorial
+  scope “/”, AppWeb do
+   pipe_through :browser
+   resources “/upload”, UploadController, only: [:create, :new]
+  end
+
   # Other scopes may use custom stacks.
   # scope "/api", AppWeb do
   #   pipe_through :api

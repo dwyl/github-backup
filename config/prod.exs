@@ -26,6 +26,8 @@ config :app, App.Repo,
   ssl: true
 
 config :app, :github_api, AppWeb.GithubAPI.HTTPClient
+# Is this needed? Thought it might be as HTTPClient is...
+config :app, :aws, AppWeb.AWS.S3
 
 # Do not print debug messages in production
 config :logger, level: :info
