@@ -24,9 +24,9 @@ but later we could build UI to make it more useable.
 
 ## How?
 
-+ Elixir
-+ Phoenix
-+ Tachyons
++ Elixir (see https://github.com/dwyl/learn-elixir to learn Elixir)
++ Phoenix (see https://github.com/dwyl/learn-phoenix-framework to learn Phoenix)
++ Tachyons (see https://github.com/dwyl/learn-tachyons to learn Tachyons)
 
 ## Set up
 
