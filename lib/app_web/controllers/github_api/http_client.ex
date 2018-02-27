@@ -44,11 +44,17 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> PP.parse!()
   end
 
-  def get_issues(token, payload) do
-    "#{@github_root}/repos/#{payload["repository"]["full_name"]}/issues"
+  def get_issues(token, payload, page, issues) do
+    data = "#{@github_root}/repos/#{payload["repository"]["full_name"]}/issues?state=all&per_page=100&page=#{page}"
     |> HTTPoison.get!(header(token), [])
-    |> Map.fetch!(:body)
-    |> PP.parse!
+    body = PP.parse!(Map.fetch!(data, :body))
+    issues = issues ++ body
+
+    if last_page?(Map.fetch!(data, :headers)) do
+      issues
+    else
+      get_issues(token, payload, page + 1, issues)
+    end
   end
 
   def get_comments(token, payload) do
@@ -56,6 +62,28 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> HTTPoison.get!(header(token), [])
     |> Map.fetch!(:body)
     |> PP.parse!
+  end
+
+  defp last_page?(headers) do
+    links_header = Map.get(Enum.into(headers, %{}), "Link")
+
+    if links_header do
+      links_header
+      |> String.split(",")
+      |> Enum.map(fn l ->
+        regex = Regex.named_captures(~r/<(?<link>.*)>;\s*rel=\"(?<rel>.*)\"/, l)
+        regex
+        |> case do
+          %{"link" => _link, "rel" => "next"} -> true
+          _ -> nil
+        end
+      end)
+      |> Enum.filter(&(not is_nil(&1)))
+      |> Enum.empty?()
+      |> Kernel.!
+    else
+      true
+    end
   end
 
 end
