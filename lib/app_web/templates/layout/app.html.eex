@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <title>Github Backup - dwyl</title>
+    <link rel="stylesheet" href="https://unpkg.com/tachyons@4.9.1/css/tachyons.min.css"/>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
