@@ -11,18 +11,10 @@ defmodule AppWeb.EventController do
     case EventType.get_event_type(x_github_event, payload["action"]) do
       :new_installation ->
         token = @github_api.get_installation_token(payload["installation"]["id"])
-        issues = @github_api.get_issues(token, payload)
+        issues = @github_api.get_issues(token, payload, 1, [])
         comments = @github_api.get_comments(token, payload)
 
-      :issue_edited ->
-        token = @github_api.get_installation_token(payload["installation"]["id"])
-        issues = @github_api.get_issues(token, payload)
-                 |> Enum.filter(fn i -> !Map.has_key?(i, "pull_request")end )
-        # IO.inspect "********************************"
-        # IO.inspect issues
-        # IO.inspect "%%%%%%%%%%%"
-        # IO.inspect length(issues)
-        # IO.inspect "********************************"
+      _ -> nil
     end
 
     conn
