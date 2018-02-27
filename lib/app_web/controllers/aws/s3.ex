@@ -8,9 +8,12 @@ defmodule AppWeb.AWS.S3 do
   def saveToS3(payload) do
     # Take the payload and then strip the content out of it
     IO.inspect payload["issue"]["body"]
-    # Save the body into s3
+  end
+
+  def get_files_bucket() do
     s3Bucket = System.get_env("S3_BUCKET_NAME")
-    # Code taken from the ExAws repo apart from the inspect
+    # Code taken from the ExAws repo apart from the inspect to list objects in
+    # the bucket
     S3.list_objects(s3Bucket) |> ExAws.request |> IO.inspect
   end
 

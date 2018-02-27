@@ -12,7 +12,7 @@ defmodule AppWeb.EventController do
 # Was originally tryig to get the payload data in order to save it in here. Since
 # Doing JC's tutorial I now also have an upload controller and so perhaps this
 # should happen there?
-    S3.saveToS3(payload)
+    # S3.saveToS3(payload)
 
     case EventType.get_event_type(x_github_event, payload["action"]) do
       :new_installation ->
