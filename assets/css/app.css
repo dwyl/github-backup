@@ -1,1 +1,51 @@
 /* This file is for your main application css. */
+
+/* Colors */
+.gh-gray {
+  color: #586069;
+}
+.gh-b--light-gray {
+  border-color: #d1d5da;
+}
+
+/* Comment box arrow */
+.comment:after, .comment:before {
+	right: 100%;
+	top: 2rem;
+	border: solid transparent;
+	content: " ";
+	position: absolute;
+}
+
+.comment:after {
+	border-right-color: #eee;
+	border-width: 7px;
+	margin-top: -7px;
+}
+.comment:before {
+	border-right-color: #d1d5da;
+	border-width: 8px;
+	margin-top: -8px;
+}
+
+@media (max-width: 26em) {
+  .comment-minw {
+    min-width: 85%;
+  }
+}
+
+@media (min-width: 26em) {
+  .comment-minw {
+    min-width: 91.45%;
+  }
+}
+
+/* Tachyons custom classes */
+
+.ml5-5 {
+  margin-left: 5.5rem;
+}
+
+.lh-1-25 {
+  line-height: 1.25rem;
+}
