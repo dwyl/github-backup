@@ -1,0 +1,23 @@
+<section class="tc pb4">
+  <h1>Github Backup</h1>
+  <h2 class="f2">Issue</h2>
+  <%= for {version, content} <- @comments do %>
+    <p><%= version %></p>
+
+    <section class="pb4 tl relative w-90 w-50-ns center">
+      <div class="dib br2 mr3 mv0 absolute top-0 left-0">
+        <img class="br2 w3"src="./images/user_avatar.png" alt="username image">
+      </div>
+      <div class="tl dib ba gh-b--light-gray br2 relative comment ml5-5 comment-minw">
+        <p class="pa3 bb gh-b--light-gray bg-light-gray gh-gray mb0 cf">
+          <strong>username </strong>
+          commented time-frame ago
+          <span class="ba br2 pa1 f4 b fr gh-b--light-gray lh-1-25">Member</span>
+        </p>
+        <p class="pa3 mv0 lh-copy">
+          <%= content %>
+        </p>
+      </div>
+    </section>
+  <% end %>
+</section>

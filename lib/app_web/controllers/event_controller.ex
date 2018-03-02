@@ -28,7 +28,7 @@ defmodule AppWeb.EventController do
         }
 
         changeset = Issue.changeset(%Issue{}, issue_params)
-        issue = Repo.insert!(changeset) |> IO.inspect
+        issue = Repo.insert!(changeset)
 
         comment = payload["issue"]["body"]
         version_id = issue.comments

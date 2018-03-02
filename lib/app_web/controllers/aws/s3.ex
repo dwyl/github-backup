@@ -10,4 +10,9 @@ defmodule AppWeb.AWS.S3 do
     |> ExAws.request(region: "eu-west-2")
   end
 
+  def get_issue(issue_id) do
+    s3Bucket = System.get_env("S3_BUCKET_NAME")
+    S3.get_object(s3Bucket, "#{issue_id}.json")
+    |> ExAws.request(region: "eu-west-2")
+  end
 end
