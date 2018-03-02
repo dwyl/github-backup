@@ -1,7 +1,7 @@
 defmodule AppWeb.EventController do
   use AppWeb, :controller
-  alias AppWeb.EventType
-  alias App.Issue
+  alias AppWeb.{EventType, AWS.S3}
+  alias App.{Issue, Repo}
 
   @github_api Application.get_env(:app, :github_api)
 
@@ -16,46 +16,36 @@ defmodule AppWeb.EventController do
         comments = @github_api.get_comments(token, payload)
 
       :issue_created ->
-        IO.inspect "111111111111111111111111"
-        IO.inspect payload
-        IO.inspect "111111111111111111111111"
         issue_params = %{
           issue_id: payload["issue"]["id"],
-          title: payload["issue"]["title"]
+          title: payload["issue"]["title"],
+          comments: [
+            %{
+              comment_id: "#{payload["issue"]["id"]}_1",
+              versions: [%{author: payload["issue"]["user"]["login"]}]
+            }
+          ]
         }
 
-      :issue_edited ->
-        IO.inspect "AAAAAAAAAAAAAAAAAAAAAAAAA"
-        issue_params = %{
-          issue_id: payload["issue"]["id"],
-          title: payload["issue"]["title"]
-        }
-        IO.inspect issue_params
         changeset = Issue.changeset(%Issue{}, issue_params)
-        IO.inspect changeset
+        issue = Repo.insert!(changeset) |> IO.inspect
 
-        # What
-        # validate the GithubIssuePayload
-        # create and extract from GithubIssuePayload schema
-        # Issue: title, html_url, issue_id
-        # Comment: ref to issue_id, html_url (same as the issue url), comment_id
-        # User: login, html_url (we can add all the fields later on)
-        # Versions: ref to Comment, ref to User
-        # save all the data
-        # save file in s3 {version_id: "text", ...}
+        comment = payload["issue"]["body"]
+        version_id = issue.comments
+                     |> List.first()
+                     |> Map.get(:versions)
+                     |> List.first()
+                     |> Map.get(:id)
 
-        #How
-        # Break schema in smaller one, p18:
-          # use embedded_schema to define a schema that won't be save in DB
-          # apply_changes fct to get the schema after validation
-          # Create fcts to extract the field necessary for the Issue, Comment, User tables; use schemaless queries
-          #GithubIssuePayload -> Issue  Comment and User
+        S3.save_comment(issue.issue_id, Poison.encode!(%{version_id: comment}))
+
+        conn
+        |> put_status(200)
+        |> json(%{ok: "event received"})
+
+      :issue_edited -> nil
 
       _ -> nil
     end
-
-    conn
-    |> put_status(200)
-    |> json(%{ok: "event received"})
   end
 end
