@@ -1,6 +1,7 @@
 defmodule AppWeb.EventController do
   use AppWeb, :controller
-  alias AppWeb.EventType
+  alias AppWeb.{EventType, AWS.S3}
+  alias App.{Issue, Repo}
 
   @github_api Application.get_env(:app, :github_api)
 
@@ -14,11 +15,37 @@ defmodule AppWeb.EventController do
         issues = @github_api.get_issues(token, payload, 1, [])
         comments = @github_api.get_comments(token, payload)
 
+      :issue_created ->
+        issue_params = %{
+          issue_id: payload["issue"]["id"],
+          title: payload["issue"]["title"],
+          comments: [
+            %{
+              comment_id: "#{payload["issue"]["id"]}_1",
+              versions: [%{author: payload["issue"]["user"]["login"]}]
+            }
+          ]
+        }
+
+        changeset = Issue.changeset(%Issue{}, issue_params)
+        issue = Repo.insert!(changeset) |> IO.inspect
+
+        comment = payload["issue"]["body"]
+        version_id = issue.comments
+                     |> List.first()
+                     |> Map.get(:versions)
+                     |> List.first()
+                     |> Map.get(:id)
+
+        S3.save_comment(issue.issue_id, Poison.encode!(%{version_id: comment}))
+
+        conn
+        |> put_status(200)
+        |> json(%{ok: "event received"})
+
+      :issue_edited -> nil
+
       _ -> nil
     end
-
-    conn
-    |> put_status(200)
-    |> json(%{ok: "event received"})
   end
 end
