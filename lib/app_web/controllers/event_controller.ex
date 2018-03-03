@@ -4,6 +4,7 @@ defmodule AppWeb.EventController do
   alias App.{Issue, Repo}
 
   @github_api Application.get_env(:app, :github_api)
+  @s3_api Application.get_env(:app, :s3_api)
 
   def new(conn, payload) do
     headers = Enum.into(conn.req_headers, %{})
@@ -14,6 +15,10 @@ defmodule AppWeb.EventController do
         token = @github_api.get_installation_token(payload["installation"]["id"])
         issues = @github_api.get_issues(token, payload, 1, [])
         comments = @github_api.get_comments(token, payload)
+
+        conn
+        |> put_status(200)
+        |> json(%{ok: "new installation"})
 
       :issue_created ->
         issue_params = %{
@@ -37,11 +42,11 @@ defmodule AppWeb.EventController do
                      |> List.first()
                      |> Map.get(:id)
 
-        S3.save_comment(issue.issue_id, Poison.encode!(%{version_id: comment}))
+        @s3_api.save_comment(issue.issue_id, Poison.encode!(%{version_id => comment}))
 
         conn
         |> put_status(200)
-        |> json(%{ok: "event received"})
+        |> json(%{ok: "issue created"})
 
       :issue_edited -> nil
 

@@ -10,7 +10,7 @@ defmodule AppWeb.EventTypeTest do
     assert EventType.get_event_type("issue_comment", "edited") == :comment_edited
     assert EventType.get_event_type("issue_comment", "deleted") == :comment_deleted
 
-    assert EventType.get_event_type("issues", "created") == :issue_created
+    assert EventType.get_event_type("issues", "opened") == :issue_created
     assert EventType.get_event_type("issues", "edited") == :issue_edited
     assert EventType.get_event_type("issues", "closed") == :issue_closed
     assert EventType.get_event_type("issues", "reopened") == :issue_reopened
