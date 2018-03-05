@@ -3,6 +3,9 @@ defmodule App.Version do
   import Ecto.Changeset
   alias App.{Comment, Version}
 
+  @moduledoc """
+  version schema, define changeset to validate version params
+  """
 
   schema "versions" do
     field :author, :string
