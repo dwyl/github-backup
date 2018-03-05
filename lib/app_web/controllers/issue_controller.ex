@@ -2,7 +2,7 @@ defmodule AppWeb.IssueController do
   use AppWeb, :controller
   alias AppWeb.AWS.S3
   alias Poison
-  alias App.Repo
+  alias App.{Issue, Repo}
 
   def show(conn, params) do
     IO.inspect params # {"id" => "1"}
@@ -11,7 +11,7 @@ defmodule AppWeb.IssueController do
     data = Poison.decode!(comments)
     #  Get the data from the db
     IO.inspect String.to_integer(params["id"])
-    issue = Repo.get_by!(Issues, issue_id: String.to_integer(params["id"]))
+    issue = Repo.get_by!(Issue, issue_id: params["id"])
     # preload comments and versions
     IO.inspect issue
     IO.inspect "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
