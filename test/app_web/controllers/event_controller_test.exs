@@ -7,7 +7,8 @@ defmodule AppWeb.EventTestController do
     %{payload: "installation", event: "installation"},
     %{payload: "issue_opened", event: "issues"},
     %{payload: "issue_title_edited", event: "issues"},
-    %{payload: "issue_edited", event: "issues"}
+    %{payload: "issue_edited", event: "issues"},
+    %{payload: "comment_created", event: "issue_comment"},
   ]
   |> Enum.map(&(%{&1 | payload: "./test/fixtures/#{&1.payload}.json"}))
 
