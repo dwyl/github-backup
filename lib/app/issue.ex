@@ -3,6 +3,9 @@ defmodule App.Issue do
   import Ecto.Changeset
   alias App.{Issue, Comment}
 
+  @moduledoc """
+  issue schema, define changeset to validate issue params
+  """
 
   schema "issues" do
     field :issue_id, :integer
