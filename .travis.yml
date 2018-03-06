@@ -1,6 +1,6 @@
 language: elixir
 elixir:
-  - 1.5
+  - 1.6
 addons:
   postgresql: '9.4'
 env:
