@@ -1,12 +1,29 @@
 defmodule AppWeb.CommentControllerTest do
   use AppWeb.ConnCase
-  alias App.{Comment, Repo}
+  alias App.{Issue, Repo}
 
-  test "GET /comments/302728924_1", %{conn: conn} do
-    Repo.insert %Comment{comment_id: "302728924_1", issue_id: 4}
+  describe "loads comment page" do
+    setup do
+      issue_params = %{
+        issue_id: 1,
+        title: "Test issue title",
+        comments: [
+          %{
+            comment_id: "1_1",
+            versions: [%{author: "SimonLab"}]
+          }
+        ]
+      }
 
-    conn = get conn, "comments/302728924_1"
+      changeset = Issue.changeset(%Issue{}, issue_params)
+      issue = Repo.insert!(changeset)
+      {:ok, conn: build_conn() |> assign(:issue, issue)}
+    end
 
-    assert html_response(conn, 200) =~ "This is the copy of the new issue."
+    test "GET /comments/1_1", %{conn: conn} do
+      conn = get conn, "comments/1_1"
+
+      assert html_response(conn, 200) =~ "Test issue title"
+    end
   end
 end
