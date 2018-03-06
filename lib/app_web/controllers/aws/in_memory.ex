@@ -7,4 +7,8 @@ defmodule AppWeb.AWS.InMemory do
     %{ok: %{}}
   end
 
+  def get_issue(_issue_id) do
+    {:ok, %{body: "{\"1\": \"comment\"}"}}
+  end
+
 end

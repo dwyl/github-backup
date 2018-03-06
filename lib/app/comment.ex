@@ -3,6 +3,9 @@ defmodule App.Comment do
   import Ecto.Changeset
   alias App.{Comment, Issue, Version}
 
+  @moduledoc """
+  comment schema, define changeset to validate comment params
+  """
 
   schema "comments" do
     field :comment_id, :string
