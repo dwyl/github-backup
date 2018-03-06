@@ -12,7 +12,7 @@ defmodule AppWeb.EventController do
     x_github_event = Map.get(headers, "x-github-event")
     github_webhook_action = payload["action"]
 
-    case EventType.get_event_type(x_github_event, github_webhook_action ) do
+    case EventType.get_event_type(x_github_event, github_webhook_action) do
       :new_installation ->
         token = @github_api.get_installation_token(payload["installation"]["id"])
         issues = @github_api.get_issues(token, payload, 1, [])
@@ -54,7 +54,6 @@ defmodule AppWeb.EventController do
         issue_id = payload["issue"]["id"]
 
         if Map.has_key?(payload["changes"], "title") do
-          %{"title" => _change} ->
             issue = Repo.get_by!(Issue, issue_id: issue_id)
             issue = Changeset.change issue, title: payload["issue"]["title"]
             Repo.update!(issue)
@@ -63,7 +62,7 @@ defmodule AppWeb.EventController do
         if Map.has_key?(payload["changes"], "title") do
           comment = payload["issue"]["body"]
           author = payload["sender"]["login"]
-          add_comment_version("#{issue_id}_1", comment, author)
+          add_comment_version(issue_id, "#{issue_id}_1", comment, author)
         end
 
         conn
@@ -88,10 +87,11 @@ defmodule AppWeb.EventController do
         |> json(%{ok: "comment created"})
 
       :comment_edited ->
+        issue_id = payload["issue"]["id"]
         comment_id = payload["comment"]["id"]
         comment = payload["comment"]["body"]
         author = payload["sender"]["login"]
-        add_comment_version(comment_id, comment, author)
+        add_comment_version(issue_id, comment_id, comment, author)
 
         conn
         |> put_status(200)
@@ -108,11 +108,11 @@ defmodule AppWeb.EventController do
     @s3_api.save_comment(issue_id, Poison.encode!(content))
   end
 
-  defp add_comment_version(comment_id, comment, author) do
+  defp add_comment_version(issue_id, comment_id, content, author) do
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
     version_params = %{author: author}
     changeset = Ecto.build_assoc(comment, :versions, version_params)
     version = Repo.insert!(changeset)
-    update_s3_file(issue_id, version.id, comment)
+    update_s3_file(issue_id, version.id, content)
   end
 end
