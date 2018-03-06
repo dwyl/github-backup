@@ -10,6 +10,7 @@
     "web/views/error_helpers.ex",
     "test/support/data_case.ex",
     "lib/app_web/endpoint.ex",
-    "lib/app_web/controllers/github_api/http_client.ex"
+    "lib/app_web/controllers/github_api/http_client.ex",
+    "lib/app_web/controllers/aws/s3.ex"
   ]
 }

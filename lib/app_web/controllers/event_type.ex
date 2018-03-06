@@ -27,7 +27,7 @@ defmodule AppWeb.EventType do
 
   defp type("issues", action) do
     case action do
-      "created" -> :issue_created
+      "opened" -> :issue_created
       "edited" -> :issue_edited
       "closed" -> :issue_closed
       "reopened" -> :issue_reopened

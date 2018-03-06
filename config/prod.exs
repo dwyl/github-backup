@@ -26,6 +26,7 @@ config :app, App.Repo,
   ssl: true
 
 config :app, :github_api, AppWeb.GithubAPI.HTTPClient
+config :app, :s3_api, AppWeb.AWS.S3
 
 # Do not print debug messages in production
 config :logger, level: :info
