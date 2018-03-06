@@ -1,6 +1,6 @@
 defmodule AppWeb.EventController do
   use AppWeb, :controller
-  alias AppWeb.{EventType, AWS.S3}
+  alias AppWeb.EventType
   alias App.{Comment, Issue, Repo}
   alias Ecto.Changeset
 
@@ -64,11 +64,7 @@ defmodule AppWeb.EventController do
             changeset = Ecto.build_assoc(comment, :versions, version_params)
             version = Repo.insert!(changeset)
 
-            # update the file on S3
-            {:ok, s3_issue} = s3_issue = @s3_api.get_issue(issue_id)
-            content = Poison.decode!(s3_issue.body)
-            content = Map.put(content, version.id, payload["issue"]["body"])
-            @s3_api.save_comment(issue_id, Poison.encode!(content))
+            update_s3_file(issue_id, version.id, payload["issue"]["body"])
 
           _ -> nil
         end
@@ -77,7 +73,31 @@ defmodule AppWeb.EventController do
         |> put_status(200)
         |> json(%{ok: "issue edited"})
 
+      :comment_created ->
+        issue_id = payload["issue"]["id"]
+        issue = Repo.get_by!(Issue, issue_id: issue_id)
+        comment_params = %{
+          comment_id: "#{payload["comment"]["id"]}",
+          versions: [%{author: payload["comment"]["user"]["login"]}]
+        }
+        changeset = Ecto.build_assoc(issue, :comments, comment_params)
+        comment = Repo.insert!(changeset)
+
+        version = List.first(comment.versions)
+        update_s3_file(issue_id, version.id, payload["comment"]["body"])
+
+        conn
+        |> put_status(200)
+        |> json(%{ok: "comment created"})
+
       _ -> nil
     end
+  end
+
+  defp update_s3_file(issue_id, version_id, comment) do
+    {:ok, s3_issue} = @s3_api.get_issue(issue_id)
+    content = Poison.decode!(s3_issue.body)
+    content = Map.put(content, version_id, comment)
+    @s3_api.save_comment(issue_id, Poison.encode!(content))
   end
 end
