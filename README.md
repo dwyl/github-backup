@@ -3,24 +3,20 @@
 
 ## Why?
 
-As a person who uses GitHub as their "_single-source-of-truth_"
+As a person who uses GitHub as their
+["_single-source-of-truth_"](https://en.wikipedia.org/wiki/Single_source_of_truth)
 I need a backup of GitHub issues
 so that I can work "offline".
 (_either when I have no network or GH is "down"_)
 
 ## What?
 
-Backup GitHub issues.
+GitHub (Issue) Backup is an App that lets you (_unsurprisingly_):
 
-+ a script that lets you login to GitHub using OAuth
-+ Use GitHub REST API to retrieve all issues
-+ Store issues as "flat files" in subdirectories corresponding to the GitHub URL
-e.g: if the issue is `dwyl/github-reference/issues/15`
-store it as `dwyl/github-reference/issues/15.json`
-+ It does not need to "scale" it just needs to work. read: http://paulgraham.com/ds.html
-
-Note: initially we do not need a Web-UI to let people backup their issues,
-but later we could build UI to make it more useable.
+1. Store a backup of the content of a GitHub issue
+2. Track the changes/edits made to issue description and comments
+3. View all your issues when you or GitHub are
+["offline"](https://github.com/dwyl/github-reference/issues/15)
 
 ## How?
 
