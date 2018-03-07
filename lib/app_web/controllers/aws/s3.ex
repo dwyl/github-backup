@@ -17,5 +17,4 @@ defmodule AppWeb.AWS.S3 do
     |> S3.get_object("#{issue_id}.json")
     |> ExAws.request(region: @s3_region)
   end
-
 end
