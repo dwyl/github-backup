@@ -1,5 +1,18 @@
 # github-backup
+
 :back: :arrow_up: A script to backup your GitHub Account/Organisation so you can still work when (they/you are) offline.
+
+
+<div align="center">
+
+[![Build Status](https://img.shields.io/travis/dwyl/github-backup/master.svg?style=flat-square)](https://travis-ci.org/dwyl/github-backup)
+[![Inline docs](http://inch-ci.org/github/dwyl/github-backup.svg?style=flat-square)](http://inch-ci.org/github/dwyl/github-backup)
+[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/github-backup/master.svg?style=flat-square)](http://codecov.io/github/dwyl/github-backup?branch=master)
+[![Deps Status](https://beta.hexfaktor.org/badge/all/github/dwyl/github-backup.svg?style=flat-square)](https://beta.hexfaktor.org/github/dwyl/github-backup)
+[![HitCount](http://hits.dwyl.io/dwyl/github-backup.svg)](https://github.com/dwyl/github-backup)
+
+</div>
+
 
 ## Why?
 
@@ -19,6 +32,10 @@ GitHub (Issue) Backup is an App that lets you (_unsurprisingly_):
 ["offline"](https://github.com/dwyl/github-reference/issues/15)
 
 ## How?
+
+The app is built using the Phoenix Web Framework,
+if you are `new` to Phoenix (_or Elixir_),
+we have a "tutorials":
 
 + Elixir
 + Phoenix
