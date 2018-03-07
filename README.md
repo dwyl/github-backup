@@ -1,6 +1,6 @@
 # github-backup
 
-:back: :arrow_up: A script to backup your GitHub Account/Organisation so you can still work when (they/you are) offline.
+An App that helps you Backup your GitHub Issues so you can still work when (they/you are) offline.
 
 
 <div align="center">
@@ -16,10 +16,10 @@
 
 ## Why?
 
-As a person who uses GitHub as their
-["_single-source-of-truth_"](https://en.wikipedia.org/wiki/Single_source_of_truth)
-I need a backup of GitHub issues
-so that I can work "offline".
+`As a person` who uses **GitHub** as their
+["***single-source-of-truth***"](https://en.wikipedia.org/wiki/Single_source_of_truth) <br />
+I `need` a backup of GitHub issues <br />
+`so that` I can work "offline". <br />
 (_either when I have no network or GH is "down"_)
 
 ## What?
@@ -33,33 +33,78 @@ GitHub (Issue) Backup is an App that lets you (_unsurprisingly_):
 
 ## How?
 
-The app is built using the Phoenix Web Framework,
-if you are `new` to Phoenix (_or Elixir_),
-we have a "tutorials":
+The app is built using the Phoenix Web Framework
+(_using the Elixir programming language_)
+and Tachyons UI ("Functional CSS") system. <br />
+While you can _run_ the App without knowing Elixir or Phoenix
+(_see instructions below_),
+if you want to _understand_ how it works,
+we _recommend_ learning.
+<br />
+If you are `new` to Phoenix, Elixir,
+or to Tachyons (_the UI_)
+we have a "_beginner tutorials_"
+which will bring you up-to-speed:
 
-+ Elixir
-+ Phoenix
-+ Tachyons
++ Elixir:
+[github.com/dwyl/**learn-elixir**](https://github.com/dwyl/learn-elixir)
++ Phoenix:
+[github.com/dwyl/**learn-phoenix-framework**](https://github.com/dwyl/learn-phoenix-framework)
++ Tachyons:
+[github.com/dwyl/**learn-tachyons**](https://github.com/dwyl/learn-tachyons)
 
-## Set up
 
-The project is hosted on heroku at: https://github-backup.herokuapp.com/
+<!--
+> Point People to the "Landing Page" (once it's ready):
+https://github.com/dwyl/github-backup/issues/55
+-->
 
-To run it locally, you will need to:
 
-- Create a new Github application.
-- Run a phoenix server on your machine.
+### Set Up Checklist on `localhost`
 
-You'll need to have installed [Elixir](https://elixir-lang.org/install.html), [Phoenix](https://hexdocs.pm/phoenix/installation.html), and [ngrok](https://ngrok.com/download) if you haven't already.
+#### Install Dependencies
 
-> _**Note**: **only** `try` to run this on your computer once
-you've understood Elixir & Phoenix._
+To run the App on your `localhost` you will need to have **4 dependencies** _installed_:
 
-#### Create a GitHub application
++ Elixir:
+https://github.com/dwyl/learn-elixir#installation
++ PostgreSQL:
+https://github.com/dwyl/learn-postgresql#installation
++ Phoenix:  
+https://hexdocs.pm/phoenix/installation.html
++ ngrok: https://ngrok.com/download
+(_so you can share your `localhost` url with GitHub_)
 
-The role of the Github application is to send notifications
-when events occur on your repositories.
-For example you can get a notification when new issues or pull requests are open.
+Once all the necessary dependencies are installed,
+we can move on.
+(_if you get stuck, please let us know_!)
+
+#### Clone the App
+
+Run the following the command to `clone` the app:
+```sh
+git clone git@github.com:dwyl/github-backup.git && cd github-backup
+```
+
+#### Required Environment Variables
+
+
+
+
+
+#### Install Elixir (_Application-specific_) Dependencies
+
+```sh
+mix deps.get
+```
+
+
+#### Create a GitHub Application
+
+The role of the Github application is to
+send **notifications** when **events** occur in your repositories. <br />
+For example you can get be notified
+when **new issues** or **pull requests** are ***opened***.
 
 - Access the [new application settings page](https://github.com/settings/apps/new) on your Github account:
   Settings -> Developer settings -> Github Apps -> New Github App
@@ -133,7 +178,10 @@ The `github-backup` server will receive events from Github and then save the det
   export GITHUB_APP_ID=YOUR_GITHUB_APP_ID
   ```
 
-  You can generate a new secret key base with ```mix phoenix.gen.secret```.
+  You can generate a new secret key base with:
+  ```sh
+  mix phx.gen.secret
+  ```
 
   Then execute the command ```source .env``` which will create your environment variables
 
@@ -179,3 +227,11 @@ Open http://localhost:4000 in your web browser.
 To test your github-backup server try installing your app onto one of your repos. You should see the payload of the request in the tab you have open in your terminal for the phoenix server:
 
 ![image](https://user-images.githubusercontent.com/16775804/36433464-77912686-1654-11e8-8a54-0779992d9e18.png)
+
+
+### Deployment
+
+The project is hosted on Heroku at: https://github-backup.herokuapp.com
+
+If you want to know _how_ see: <br />
+https://github.com/dwyl/learn-heroku/blob/master/elixir-phoenix-app-deployment.md
