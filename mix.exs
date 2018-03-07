@@ -51,11 +51,7 @@ defmodule App.Mixfile do
       {:joken, "~> 1.5"},
       {:jose, "~> 1.8"},
       {:ex_aws, "~> 2.0"},
-      {:ex_aws_s3, "~> 2.0"},
-      # Not sure whether needed or not
-      # {:hackney, "~> 1.9"},
-      {:sweet_xml, "~> 0.6"},
-      {:uuid, "~> 1.1" }
+      {:ex_aws_s3, "~> 2.0"}
     ]
   end
 

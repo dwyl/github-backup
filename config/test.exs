@@ -19,3 +19,4 @@ config :app, App.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :app, :github_api, AppWeb.GithubAPI.InMemory
+config :app, :s3_api, AppWeb.AWS.InMemory
