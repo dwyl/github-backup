@@ -9,6 +9,8 @@ defmodule App.Comment do
 
   schema "comments" do
     field :comment_id, :string
+    field :deleted, :boolean
+    field :deleted_by, :string
     belongs_to :issue, Issue
     has_many :versions, Version
 

@@ -97,6 +97,14 @@ defmodule AppWeb.EventController do
         |> put_status(200)
         |> json(%{ok: "comment edited"})
 
+      :comment_deleted ->
+        comment_id = payload["comment"]["id"]
+        changeset =
+
+        conn
+        |> put_status(200)
+        |> json(%{ok: "comment deleted"})
+
       _ -> nil
     end
   end
