@@ -18,7 +18,7 @@ defmodule App.Comment do
   end
 
   @doc false
-  def changeset(%Comment{} = comment, attrs) do
+  def changeset(%Comment{} = comment, attrs \\ %{}) do
     comment
     |> cast(attrs, [:comment_id])
     |> cast_assoc(:versions, require: true)
