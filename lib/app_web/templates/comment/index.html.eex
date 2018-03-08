@@ -1,7 +1,11 @@
 <section class="tc pb4">
   <h1>Github Backup</h1>
   <h2 class="f2"><%= @comment_details.issue.title %></h2>
+  <%= if @comment_details.deleted do %>
+    <h3>DELETED by <%= @comment_details.deleted_by %> </h3>
+  <% end %>
 </section>
+
 
 <%= for {version, i} <- Enum.with_index(@comment_details.versions) do %>
 

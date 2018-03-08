@@ -100,6 +100,12 @@ defmodule AppWeb.EventController do
       :comment_deleted ->
         comment_id = payload["comment"]["id"]
         changeset =
+        author = payload["sender"]["login"]
+        comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
+        changeset = Comment.changeset(comment)
+        changeset = Changeset.put_change(changeset, :deleted, true)
+                    |> Changeset.put_change(:deleted_by, author)
+        Repo.update!(changeset)
 
         conn
         |> put_status(200)
