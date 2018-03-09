@@ -15,8 +15,48 @@ defmodule AppWeb.EventController do
     case EventType.get_event_type(x_github_event, github_webhook_action) do
       :new_installation ->
         token = @github_api.get_installation_token(payload["installation"]["id"])
-        issues = @github_api.get_issues(token, payload, 1, [])
-        comments = @github_api.get_comments(token, payload)
+        repositories = payload["repositories"]
+        repo_data = Enum.map(repositories, fn r ->
+          issues = @github_api.get_issues(token, r["full_name"], 1, [])
+          comments = @github_api.get_comments(token, r["full_name"], 1, [])
+                     |> Enum.group_by(&(&1["issue_url"]))
+          issues = Enum.map(issues, fn i ->
+            Map.put(i, "comments", comments[i["url"]] || [])
+          end)
+          %{
+            repository: r,
+            issues: issues,
+          }
+        end)
+        issues = Enum.flat_map(repo_data, fn r ->
+          r.issues
+          |> Enum.map(fn i ->
+            %{
+              issue_id: i["id"],
+              title: i["title"],
+              comments: Enum.map(i["comments"], fn c ->
+                %{
+                  comment_id: c["id"],
+                  versions: [%{author: c["user"]["login"]}]
+                }
+              end)
+            }
+          end)
+        end)
+
+        # ADD description issue has comment too!
+        issues = Enum.map(issues, fn i ->
+          IO.inspect i
+          comment_issue = %{
+            comment_id: "#{i["id"]}_1",
+            version: [author: i["user"]["login"]]
+          }
+          comments = [comment_issue | i["comments"]]
+          Map.put(i, :comments, comments)
+        end)
+
+        # IO.inspect issues
+
 
         conn
         |> put_status(200)
@@ -98,6 +138,10 @@ defmodule AppWeb.EventController do
         |> json(%{ok: "comment edited"})
 
       _ -> nil
+        conn
+        |> put_status(200)
+        |> json(%{ok: "unknow event"})
+
     end
   end
 
@@ -114,5 +158,9 @@ defmodule AppWeb.EventController do
     changeset = Ecto.build_assoc(comment, :versions, version_params)
     version = Repo.insert!(changeset)
     update_s3_file(issue_id, version.id, content)
+  end
+
+  defp map_issues_comments(issues, comments, :issue) do
+    []
   end
 end
