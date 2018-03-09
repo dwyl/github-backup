@@ -14,4 +14,10 @@ defmodule AppWeb.CommentView do
     |> List.first
   end
 
+  def display_markdown(text) do
+    text
+    |> Earmark.as_html!
+    |> raw
+  end
+
 end
