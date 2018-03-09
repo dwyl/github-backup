@@ -15,4 +15,7 @@ defmodule AppWeb.GithubAPI.InMemory do
     []
   end
 
+  def add_meta_table(repo_name, issue_id, content, token) do
+    :ok
+  end
 end
