@@ -40,6 +40,12 @@
   }
 }
 
+.markdown_text p, .markdown_text h1 {
+  line-height: 1.5;
+  padding: 1rem;
+  margin: 0;
+}
+
 /* Tachyons custom classes */
 
 .ml5-5 {

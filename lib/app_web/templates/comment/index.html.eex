@@ -18,7 +18,7 @@
         <strong><%= version.author %></strong>
         commented <%= format_date version.inserted_at %>
       </p>
-        <span class="pa3 mv0 lh-copy">
+        <span class="markdown_text mv0">
         <%= display_markdown(@comments_text["#{version.id}"]) %>
       </span>
     </div>
