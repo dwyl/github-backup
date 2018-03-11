@@ -1,6 +1,6 @@
-# github-backup
+# :octocat: :back: :up: GitHub Backup!
 
-An App that helps you **Backup** your **GitHub Issues**
+An App that helps you **backup** your **GitHub Issues**
 `so that` you can still **work** when (you/they are) ***offline***.
 
 
@@ -71,6 +71,9 @@ https://github.com/dwyl/github-backup/issues/55
 
 ## Set Up _Checklist_ on `localhost`
 
+This will take approximately **10 minutes** to complete.
+(_provided you already have a GitHub and AWS account_)
+
 ### Install Dependencies
 
 To run the App on your `localhost`,
@@ -106,11 +109,11 @@ you will need to have the following Environment Variables defined.
 **please read**_:
 [github.com/dwyl/**learn-environment-variables**](https://github.com/dwyl/learn-environment-variables)
 
-+ `SECRET_KEY_BASE` - a 64bit string used by Phoenix for security
-(_to sign cookies and CSRF tokens_). See below for how to _generate_ yours.
 + `PRIVATE_KEY` - The key for your GitHub App.
 _See below for how to set this up_.
 + `GITHUB_APP_ID` - The unique `id` of your GitHub App. _See below_.
++ `SECRET_KEY_BASE` - a 64bit string used by Phoenix for security
+(_to sign cookies and CSRF tokens_). See below for how to _generate_ yours.
 
 
 #### Copy The `.env_sample` File
@@ -133,25 +136,6 @@ as the `.env` file is "ignored" in the_
 [`.gitignore` file](https://github.com/dwyl/github-backup/blob/778d1e311a37564721989e842412880994eb2b5d/.gitignore#L28)
 
 
-#### Generate the `SECRET_KEY_BASE`
-
-Run the following command
-to generate a new `SECRET_KEY_BASE`:
-
-```sh
-mix phx.gen.secret
-```
-_copy-paste_ the _output_ (64bit `String`)
-into your `.env` file after the "equals sign" on the line that reads:
-```yml
-export SECRET_KEY_BASE=run:mix_phx.gen.secret...
-```
-
-> _**Note**: This method only adds the environment variables **locally**
-and **temporarily** <br />
-so you need to start your server in the **same terminal**
-where you ran the `source` command_.
-
 
 ### Create a GitHub Application
 
@@ -163,43 +147,53 @@ when **new issues** or **pull requests** are ***opened***.
 #### 1. Access the New Application Settings Page
 
 While logged into your GitHub Account, visit:
-https://github.com/settings/apps/new
+https://github.com/settings/apps/new <br />
 Or _navigate_ the following menus:
 ```
 Settings -> Developer settings -> Github Apps -> New Github App
 ```
 
-![register-new-github-app](https://user-images.githubusercontent.com/194400/37253027-f20b4fbc-2523-11e8-9154-11c7f6644bb6.png)
+![github-backup-create-new-app-numbered](https://user-images.githubusercontent.com/194400/37258239-b5101ba8-256c-11e8-90e1-e2ca2a0ac20c.png)
 
-- Github App name: The name of the app; must be unique,
+<!-- numbering steps is in instructions **always** better than bullet points
+as it's easier to reference a **specific** step -->
+
+1. **Github App name**: The name of the app; must be unique,
 so can't be "gh-backup"  as that's taken!
-- Descriptions: A short description of the app; "My backup app"
-- Homepage URL: The website of the app: "https://dwyl.com/"
-- User authorization callback URL: Redirect url after user authentication e.g."http://localhost:4000/auth/github/callback".
+2. **Descriptions**: A short description of the app; "My backup app"
+3. **Homepage URL**: The website of the app. e.g: "https://gitbu.io"
+  (_yours will be different_)
+4. **User authorization callback URL**: Redirect url after user authentication e.g."http://localhost:4000/auth/github/callback".
 This is not needed for backup so this field can be left empty.
-- Setup URL: Redirect the user to this url after installation,
+5. **Setup URL** (optional): Redirect the user to this url after installation,
 not needed for `github-backup`.
-- Webhook URL: the URL where HTTP `POST` requests from Github are sent.
-The endpoint is ```/event/new```,
+6. **Webhook URL**: the URL where HTTP `POST` requests from Github are sent.
+The endpoint in the `github-backup` App is `/event/new`,
 however Github won't be able to send requests
 to ```http://localhost:4000/event/new```
 as this url is only accessible on your `localhost`.
 To allow GitHub to access your `localhost` server you can use `ngrok`.
 **Remember to update these value after you have a running server on your machine!**
-
+7. **Webhook secret** (optional) - leave this blank for now.
+see: https://github.com/dwyl/github-backup/issues/76
+(_please let us know your thoughts!_)
 
 Then in your terminal enter `ngrok http 4000`
 to generate an SSH "tunnel" between your localhost:4000 and ngrok.io.
 Copy the ngrok url that appears in your terminal
 to the Github app configuration; e.g: "http://bf541ce5.ngrok.io/event/new"
 
-> _NOTE: you will need to update the webhook URL everytime you disconnect/connect to ngrok because a different URL is generated everytime._
+> _NOTE: you will need to update the webhook URL each time you
+disconnect/connect to ngrok because a different URL is generated every time._
 
-You can read more about webhooks and ngrok at https://developer.github.com/webhooks/configuring/
+You can read more about webhooks and `ngrok` at:
+https://developer.github.com/webhooks/configuring
 
 #### 2. Set the Necessary Permissions
 
-  - Define the access rights for the application on the permmission section. **Change "issues" to "Read only"**
+Still on the same page, just scrolled down below the initial setup.
+
+  - Define the access rights for the application on the permission section. **Change "issues" to "Read only"**
 
   ![image](https://user-images.githubusercontent.com/16775804/36432698-b50c54f6-1652-11e8-8330-513c06150d05.png)
 
@@ -237,6 +231,22 @@ You can read more about webhooks and ngrok at https://developer.github.com/webho
 
 
 
+#### Generate the `SECRET_KEY_BASE`
+
+Run the following command
+to generate a new `SECRET_KEY_BASE`:
+
+```sh
+mix phx.gen.secret
+```
+_copy-paste_ the _output_ (64bit `String`)
+into your `.env` file after the "equals sign" on the line that reads:
+```yml
+export SECRET_KEY_BASE=run:mix_phx.gen.secret...
+```
+
+
+
 #### "Source" the `.env` File
 
 Now that you have defined all the necessary
@@ -247,6 +257,12 @@ Execute the command following command in your terminal:
 ```sh
 source .env
 ```
+
+> _**Note**: This method only adds the environment variables **locally**
+and **temporarily** <br />
+so you need to start your server in the **same terminal**
+where you ran the `source` command_.
+
 
 ### Install Elixir (_Application-specific_) Dependencies
 
