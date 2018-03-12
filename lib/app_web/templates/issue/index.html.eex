@@ -1,6 +1,5 @@
 <section class="tc pb4">
   <h1>Github Backup</h1>
-  <h1>ISSUE VIEW</h1>
   <h2 class="f2"><%= @issue_title %></h2>
 </section>
 

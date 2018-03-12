@@ -8,14 +8,15 @@ defmodule AppWeb.IssueController do
 
   def show(conn, params) do
     issue_id = params["id"]
+    issue = Repo.get_by!(Issue, issue_id: issue_id)
 
-    issue_data =
-      Repo.get_by!(Issue, issue_id: issue_id)
+    issue_data = issue
       |> Repo.preload([
-        comments: [versions: from(v in Version, order_by: [desc: v.inserted_at])]
-        ])
+        comments: [
+          versions: from(v in Version, order_by: [desc: v.inserted_at])
+        ]
+      ])
     comments_details = issue_data.comments
-
 
     {:ok, %{body: comments_text}} = @s3_api.get_issue(issue_id)
     comments_text = comments_text |> Poison.decode!
