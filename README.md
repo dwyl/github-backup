@@ -109,9 +109,11 @@ you will need to have the following Environment Variables defined.
 **please read**_:
 [github.com/dwyl/**learn-environment-variables**](https://github.com/dwyl/learn-environment-variables)
 
++ `APP_HOST` - the hostname for your app e.g: `localhost` or `gitbu.io`.
 + `PRIVATE_KEY` - The key for your GitHub App.
 _See below for how to set this up_.
 + `GITHUB_APP_ID` - The unique `id` of your GitHub App. _See below_.
++ `GITHUB_APP_NAME` - the name of your GitHub App. _See below_ (_Step 1_).
 + `SECRET_KEY_BASE` - a 64bit string used by Phoenix for security
 (_to sign cookies and CSRF tokens_). See below for how to _generate_ yours.
 
