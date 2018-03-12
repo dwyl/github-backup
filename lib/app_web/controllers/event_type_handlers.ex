@@ -5,6 +5,7 @@ defmodule AppWeb.EventTypeHandlers do
   alias AppWeb.MetaTable
 
   @github_api Application.get_env(:app, :github_api)
+  @github_app_name Application.get_env(:app, :github_app_name)
   @s3_api Application.get_env(:app, :s3_api)
 
   @moduledoc """
@@ -50,7 +51,7 @@ defmodule AppWeb.EventTypeHandlers do
     repo_name = payload["repository"]["full_name"]
     issue_number = payload["issue"]["number"]
     token = @github_api.get_installation_token(payload["installation"]["id"])
-    @github_api.add_meta_table(repo_name, issue_number, content, token) |> IO.inspect
+    @github_api.add_meta_table(repo_name, issue_number, content, token)
 
     conn
     |> put_status(200)
@@ -59,13 +60,14 @@ defmodule AppWeb.EventTypeHandlers do
 
   def issue_edited(conn, payload) do
       issue_id = payload["issue"]["id"]
+
       if Map.has_key?(payload["changes"], "title") do
           issue = Repo.get_by!(Issue, issue_id: issue_id)
           issue = Changeset.change issue, title: payload["issue"]["title"]
           Repo.update!(issue)
       end
-
-      if Map.has_key?(payload["changes"], "body") do
+      
+      if body_change && not_bot do
         comment = payload["issue"]["body"]
         author = payload["sender"]["login"]
         add_comment_version(issue_id, "#{issue_id}_1", comment, author)
