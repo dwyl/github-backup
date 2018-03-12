@@ -7,9 +7,9 @@ defmodule AppWeb.EditCountController do
 
     issue  = Repo.get_by!(Issue, issue_id: issue_id)
     issue = issue
-      |> Repo.preload([
-          comments: [:verions]
-        ])
+            |> Repo.preload([
+                comments: [:versions]
+              ])
 
     comment_versions = Enum.map(issue.comments, fn c ->
       length(c.versions)

@@ -1,8 +1,12 @@
 defmodule AppWeb.MetaTable do
 
   def get_meta_table(issue_id) do
-    # return the number of all edits
-    # get all the versions link to the issue
-    "Issue Edit Count: 9 | View History: link_to_the_app"
+    count = AppWeb.Endpoint.url <> "/edit-count/#{issue_id}"
+    history = AppWeb.Endpoint.url <> "/issues/#{issue_id}"
+    """
+    | Edits | View issue history |
+    |-|-|
+    |[![Edit Count](#{count})](#{count}) | **View History:** [#{history}](#{history})|
+    """
   end
 end

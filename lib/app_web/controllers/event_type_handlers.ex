@@ -47,7 +47,7 @@ defmodule AppWeb.EventTypeHandlers do
     @s3_api.save_comment(issue.issue_id, content)
 
     meta_table = MetaTable.get_meta_table(payload["issue"]["id"])
-    content = comment <> "\n" <> meta_table
+    content = comment <> "\r\n\n" <> meta_table
     repo_name = payload["repository"]["full_name"]
     issue_number = payload["issue"]["number"]
     token = @github_api.get_installation_token(payload["installation"]["id"])
