@@ -20,13 +20,16 @@ defmodule AppWeb.Router do
     get "/comments/:id", CommentController, :show
   end
 
+  scope "/", AppWeb do
+    pipe_through :api
+
+    get "/edit-count/:issue_id", EditCountController, :show
+  end
+
   scope "/event", AppWeb do
     pipe_through :api
 
     post "/new", EventController, :new
   end
-  # Other scopes may use custom stacks.
-  # scope "/api", AppWeb do
-  #   pipe_through :api
-  # end
+
 end

@@ -66,7 +66,9 @@ defmodule AppWeb.EventTypeHandlers do
           issue = Changeset.change issue, title: payload["issue"]["title"]
           Repo.update!(issue)
       end
-      
+
+      body_change = Map.has_key?(payload["changes"], "body")
+      not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
       if body_change && not_bot do
         comment = payload["issue"]["body"]
         author = payload["sender"]["login"]
