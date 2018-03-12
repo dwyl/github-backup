@@ -6,6 +6,7 @@
 <section class="tc">
   <%= if @comment_details.deleted == true do %>
   <p class="gh-gray f3">
+    <i class="fas fa-trash pa3 mr2 bg-light-gray tc br-100"></i>
     <strong><%= @comment_details.deleted_by %></strong>
     deleted this comment on <%= format_date @comment_details.updated_at %>
   </p>
