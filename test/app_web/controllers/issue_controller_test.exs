@@ -1,6 +1,6 @@
 defmodule AppWeb.IssueControllerTest do
   use AppWeb.ConnCase
-  alias App.{Issue, Version, Repo}
+  alias App.{Issue, Repo}
 
   describe "loads issue page" do
     setup do
