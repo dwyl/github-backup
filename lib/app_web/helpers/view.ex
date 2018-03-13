@@ -11,12 +11,13 @@ defmodule AppWeb.Helpers.View do
     |> Timex.from_now
   end
 
-  def tidyISODate(iso_date) do
-    iso_date
-    |> String.replace("T", " ")
-    |> String.split(".")
-    |> List.first
-  end
+# Function not in use, but will be when implementing: https://git.io/vxU7b
+  # def tidyISODate(iso_date) do
+  #   iso_date
+  #   |> String.replace("T", " ")
+  #   |> String.split(".")
+  #   |> List.first
+  # end
 
   def display_markdown(text) do
     text
