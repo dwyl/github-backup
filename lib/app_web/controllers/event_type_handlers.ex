@@ -9,13 +9,11 @@ defmodule AppWeb.EventTypeHandlers do
   @moduledoc """
   Determines the type of event received by the Github Webhooks requests
   """
-  defp map_issues_comments(issues, comments, :issue) do
-    []
-  end
-  
+
   def new_installation(conn, payload) do
     token = @github_api.get_installation_token(payload["installation"]["id"])
     repositories = payload["repositories"]
+
     repo_data = Enum.map(repositories, fn r ->
       issues = @github_api.get_issues(token, r["full_name"], 1, [])
       comments = @github_api.get_comments(token, r["full_name"], 1, [])
@@ -28,16 +26,21 @@ defmodule AppWeb.EventTypeHandlers do
         issues: issues,
       }
     end)
+    # create list of issue schema
     issues = Enum.flat_map(repo_data, fn r ->
       r.issues
       |> Enum.map(fn i ->
         %{
+          pull_request: Map.has_key?(i, "pull_request"),
           issue_id: i["id"],
           title: i["title"],
+          description: i["body"],
+          issue_author: i["user"]["login"],
           comments: Enum.map(i["comments"], fn c ->
             %{
-              comment_id: c["id"],
-              versions: [%{author: c["user"]["login"]}]
+              comment_id: "#{c["id"]}",
+              versions: [%{author: c["user"]["login"]}],
+              comment: c["body"]
             }
           end)
         }
@@ -46,13 +49,52 @@ defmodule AppWeb.EventTypeHandlers do
 
     # Add description issue has comment too!
     issues = Enum.map(issues, fn i ->
-      IO.inspect i
       comment_issue = %{
-        comment_id: "#{i["id"]}_1",
-        version: [author: i["user"]["login"]]
+        comment_id: "#{i.issue_id}_1",
+        versions: [%{author: i.issue_author}],
+        comment: i.description
       }
-      comments = [comment_issue | i["comments"]]
+      comments = [comment_issue | i.comments]
       Map.put(i, :comments, comments)
+    end)
+
+    # filter issue to remove PRs
+    issues = Enum.filter(issues, fn i ->
+      !i.pull_request
+    end)
+
+    # create map for comments
+    comments_body = Enum.map(issues, fn i ->
+      Enum.map(i.comments, fn c ->
+        %{c.comment_id => c.comment}
+      end)
+    end)
+
+    comments_body = comments_body
+                    |> List.flatten()
+                    |> Enum.reduce(%{}, fn(c, acc) ->
+                      Map.merge(c, acc)
+                    end)
+
+    # save issue
+    Enum.each(issues, fn i ->
+      changeset = Issue.changeset(%Issue{}, i)
+      issue = Repo.insert!(changeset)
+      comments = issue.comments
+
+      versions = Enum.map(comments, fn c ->
+        v = c.versions
+        |> List.first()
+
+        %{v.id => comments_body[c.comment_id]}
+      end)
+
+      s3_data = Enum.reduce(versions, %{}, fn(v, acc) ->
+        Map.merge(v, acc)
+      end)
+
+      content = Poison.encode!(s3_data)
+      @s3_api.save_comment(issue.issue_id, content)
     end)
 
     conn

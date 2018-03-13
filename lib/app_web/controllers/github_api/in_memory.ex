@@ -11,7 +11,7 @@ defmodule AppWeb.GithubAPI.InMemory do
     []
   end
 
-  def get_comments(_token, _payload) do
+  def get_comments(_token, _repo, _page, _comments) do
     []
   end
 
