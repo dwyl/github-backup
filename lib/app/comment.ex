@@ -9,6 +9,8 @@ defmodule App.Comment do
 
   schema "comments" do
     field :comment_id, :string
+    field :deleted, :boolean
+    field :deleted_by, :string
     belongs_to :issue, Issue
     has_many :versions, Version
 
@@ -16,7 +18,7 @@ defmodule App.Comment do
   end
 
   @doc false
-  def changeset(%Comment{} = comment, attrs) do
+  def changeset(%Comment{} = comment, attrs \\ %{}) do
     comment
     |> cast(attrs, [:comment_id])
     |> cast_assoc(:versions, require: true)

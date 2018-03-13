@@ -1,44 +1,51 @@
 defmodule AppWeb.EventType do
+  alias AppWeb.EventTypeHandlers
+
   @moduledoc """
   Determines the type of event received by the Github Webhooks requests
   """
 
-  def get_event_type(x_github_event, action) do
+  def get_event_type(x_github_event, action, conn, payload) do
     case x_github_event do
-      "installation" -> type("installation", action)
-      "installation_repositories" -> type("installation_repositories", action)
-      "issues" -> type("issues", action)
-      "issue_comment" -> type("issue_comment", action)
+      "installation" -> type("installation", action, conn, payload)
+      # See #72 - https://git.io/vApsZ
+      # "installation_repositories" ->
+         # type("installation_repositories", action, conn, payload)
+      "issues" -> type("issues", action, conn, payload)
+      "issue_comment" -> type("issue_comment", action, conn, payload)
       _ -> nil
     end
   end
 
-  defp type("installation", action) do
+  defp type("installation", action, conn, payload) do
     case action do
-      "created" -> :new_installation
+      "created" -> EventTypeHandlers.new_installation(conn, payload)
     end
   end
 
-  defp type("installation_repositories", action) do
+  # See #72 - https://git.io/vApsZ
+  # defp type("installation_repositories", action) do
+  #   case action do
+  #     "added" -> :new_installation_repositories
+  #   end
+  # end
+
+  defp type("issues", action, conn, payload) do
     case action do
-      "added" -> :new_installation_repositories
+      "opened" -> EventTypeHandlers.issue_created(conn, payload)
+      "edited" -> EventTypeHandlers.issue_edited(conn, payload)
+      # See #70 - https://git.io/vAp3y
+      # "closed" -> :issue_closed
+      # See #71 - https://git.io/vAp3b
+      # "reopened" -> :issue_reopened
     end
   end
 
-  defp type("issues", action) do
+  defp type("issue_comment", action, conn, payload) do
     case action do
-      "opened" -> :issue_created
-      "edited" -> :issue_edited
-      "closed" -> :issue_closed
-      "reopened" -> :issue_reopened
-    end
-  end
-
-  defp type("issue_comment", action) do
-    case action do
-      "created" -> :comment_created
-      "edited" -> :comment_edited
-      "deleted" -> :comment_deleted
+      "created" -> EventTypeHandlers.comment_created(conn, payload)
+      "edited" -> EventTypeHandlers.comment_edited(conn, payload)
+      "deleted" -> EventTypeHandlers.comment_deleted(conn, payload)
     end
   end
 end
