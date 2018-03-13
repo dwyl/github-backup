@@ -1,5 +1,6 @@
 defmodule AppWeb.EventTypeHandlers do
   alias App.{Comment, Issue, Repo}
+  alias App.Helpers.IssueHelper
   alias Ecto.Changeset
   use AppWeb, :controller
 
@@ -17,15 +18,13 @@ defmodule AppWeb.EventTypeHandlers do
     repo_data = Enum.map(repositories, fn r ->
       issues = @github_api.get_issues(token, r["full_name"], 1, [])
       comments = @github_api.get_comments(token, r["full_name"], 1, [])
-                 |> Enum.group_by(&(&1["issue_url"]))
-      issues = Enum.map(issues, fn i ->
-        Map.put(i, "comments", comments[i["url"]] || [])
-      end)
+      issues = IssueHelper.attach_comments(issues, comments)
       %{
         repository: r,
         issues: issues,
       }
     end)
+
     # create list of issue schema
     issues = Enum.flat_map(repo_data, fn r ->
       r.issues
@@ -48,51 +47,20 @@ defmodule AppWeb.EventTypeHandlers do
     end)
 
     # Add description issue has comment too!
-    issues = Enum.map(issues, fn i ->
-      comment_issue = %{
-        comment_id: "#{i.issue_id}_1",
-        versions: [%{author: i.issue_author}],
-        comment: i.description
-      }
-      comments = [comment_issue | i.comments]
-      Map.put(i, :comments, comments)
-    end)
+    issues = IssueHelper.issues_as_comments(issues)
 
     # filter issue to remove PRs
-    issues = Enum.filter(issues, fn i ->
-      !i.pull_request
-    end)
+    issues = IssueHelper.get_issues(issues)
 
-    # create map for comments
-    comments_body = Enum.map(issues, fn i ->
-      Enum.map(i.comments, fn c ->
-        %{c.comment_id => c.comment}
-      end)
-    end)
-
-    comments_body = comments_body
-                    |> List.flatten()
-                    |> Enum.reduce(%{}, fn(c, acc) ->
-                      Map.merge(c, acc)
-                    end)
+    # create map for comments: %{comment_id => comment_text, ...}
+    comments_body = IssueHelper.get_map_comments(issues)
 
     # save issue
     Enum.each(issues, fn i ->
       changeset = Issue.changeset(%Issue{}, i)
       issue = Repo.insert!(changeset)
-      comments = issue.comments
 
-      versions = Enum.map(comments, fn c ->
-        v = c.versions
-        |> List.first()
-
-        %{v.id => comments_body[c.comment_id]}
-      end)
-
-      s3_data = Enum.reduce(versions, %{}, fn(v, acc) ->
-        Map.merge(v, acc)
-      end)
-
+      s3_data = IssueHelper.get_s3_content(issue, comments_body)
       content = Poison.encode!(s3_data)
       @s3_api.save_comment(issue.issue_id, content)
     end)
