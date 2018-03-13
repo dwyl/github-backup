@@ -21,11 +21,7 @@
           <div class="mv3 w3">
             <img class="br2"src="/images/user_avatar.png" alt="user avatar">
           </div>
-          <%= if i != 0 do %>
-            <div class="ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative bg-moon-gray">
-            <% else %>
-              <div class="ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative">
-            <% end %>
+          <div class="<%= style_comments(i) %>">
             <p class="pa3 bb gh-b--light-gray bg-light-gray gh-gray mb0 cf">
               <strong><%= version.author %></strong>
               commented <%= format_date version.inserted_at %>
