@@ -2,13 +2,13 @@ defmodule AppWeb.Helpers.View do
   @moduledoc """
   Helper functions for views to use
   """
+  import Timex
 
   use Phoenix.HTML
 
   def format_date(date) do
     date
-    |> NaiveDateTime.to_iso8601
-    |> tidyISODate
+    |> Timex.from_now
   end
 
   def tidyISODate(iso_date) do

@@ -52,7 +52,8 @@ defmodule App.Mixfile do
       {:jose, "~> 1.8"},
       {:ex_aws, "~> 2.0"},
       {:ex_aws_s3, "~> 2.0"},
-      {:earmark, "~> 1.2.4"}
+      {:earmark, "~> 1.2.4"},
+      {:timex, "~> 3.1"}
     ]
   end
 
