@@ -8,6 +8,10 @@
   border-color: #d1d5da;
 }
 
+.gh-bg-teal {
+  background-color: #4ABDAC;
+}
+
 /* Comment box arrow */
 .comment:after, .comment:before {
 	right: 100%;
