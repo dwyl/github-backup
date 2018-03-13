@@ -118,6 +118,8 @@ The `github-backup` server will receive events from Github and then save the det
   export PRIVATE_KEY=YOUR_PRIVATE_KEY
   # Your GITHUB_APP_ID is found in the settings of your github app under General > About
   export GITHUB_APP_ID=YOUR_GITHUB_APP_ID
+  export GITHUB_APP_NAME=NAME_OF_THE_GITHUB_APP
+  export APP_HOST=localhost
   ```
 
   You can generate a new secret key base with ```mix phoenix.gen.secret```.

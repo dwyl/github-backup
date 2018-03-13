@@ -64,6 +64,11 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> PP.parse!
   end
 
+  def add_meta_table(repo_name, issue_id, content, token) do
+    "#{@github_root}/repos/#{repo_name}/issues/#{issue_id}"
+    |> HTTPoison.patch!(Poison.encode!(%{body: content}), header(token))
+  end
+
   defp last_page?(headers) do
     links_header = Map.get(Enum.into(headers, %{}), "Link")
 
