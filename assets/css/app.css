@@ -28,18 +28,6 @@
 	margin-top: -8px;
 }
 
-@media (max-width: 26em) {
-  .comment-minw {
-    min-width: 85%;
-  }
-}
-
-@media (min-width: 26em) {
-  .comment-minw {
-    min-width: 94.2%;
-  }
-}
-
 .markdown_text p, .markdown_text h1 {
   line-height: 1.5;
   padding: 1rem;
@@ -47,10 +35,6 @@
 }
 
 /* Tachyons custom classes */
-
-.ml5-5 {
-  margin-left: 5.5rem;
-}
 
 .lh-1-25 {
   line-height: 1.25rem;
