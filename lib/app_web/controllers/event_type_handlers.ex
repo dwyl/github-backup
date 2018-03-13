@@ -1,9 +1,11 @@
 defmodule AppWeb.EventTypeHandlers do
+  use AppWeb, :controller
   alias App.{Comment, Issue, Repo}
   alias Ecto.Changeset
-  use AppWeb, :controller
+  alias AppWeb.MetaTable
 
   @github_api Application.get_env(:app, :github_api)
+  @github_app_name Application.get_env(:app, :github_app_name)
   @s3_api Application.get_env(:app, :s3_api)
 
   @moduledoc """
@@ -44,6 +46,13 @@ defmodule AppWeb.EventTypeHandlers do
     content = Poison.encode!(%{version_id => comment})
     @s3_api.save_comment(issue.issue_id, content)
 
+    meta_table = MetaTable.get_meta_table(payload["issue"]["id"])
+    content = comment <> "\r\n\n" <> meta_table
+    repo_name = payload["repository"]["full_name"]
+    issue_number = payload["issue"]["number"]
+    token = @github_api.get_installation_token(payload["installation"]["id"])
+    @github_api.add_meta_table(repo_name, issue_number, content, token)
+
     conn
     |> put_status(200)
     |> json(%{ok: "issue created"})
@@ -58,7 +67,9 @@ defmodule AppWeb.EventTypeHandlers do
           Repo.update!(issue)
       end
 
-      if Map.has_key?(payload["changes"], "title") do
+      body_change = Map.has_key?(payload["changes"], "body")
+      not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
+      if body_change && not_bot do
         comment = payload["issue"]["body"]
         author = payload["sender"]["login"]
         add_comment_version(issue_id, "#{issue_id}_1", comment, author)
