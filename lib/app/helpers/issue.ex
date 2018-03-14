@@ -34,8 +34,14 @@ defmodule App.Helpers.IssueHelper do
     |> Enum.map(fn i ->
       comment_issue = %{
         comment_id: "#{i.issue_id}_1",
-        versions: [%{author: i.issue_author}],
-        comment: i.description
+        versions: [%{
+          author: i.issue_author,
+          inserted_at: i.inserted_at,
+          updated_at: i.updated_at
+          }],
+        comment: i.description,
+        inserted_at: i.inserted_at,
+        updated_at: i.updated_at,
       }
       comments = [comment_issue | i.comments]
       Map.put(i, :comments, comments)

@@ -18,7 +18,7 @@ defmodule App.Issue do
   @doc false
   def changeset(%Issue{} = issue, attrs) do
     issue
-    |> cast(attrs, [:issue_id, :title])
+    |> cast(attrs, [:issue_id, :title, :inserted_at, :updated_at])
     |> cast_assoc(:comments, require: true)
     |> validate_required([:issue_id, :title])
   end

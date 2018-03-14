@@ -43,12 +43,19 @@ defmodule AppWeb.EventTypeHandlers do
           title: i["title"],
           description: i["body"],
           issue_author: i["user"]["login"],
-          created_at: i["created_at"],
+          inserted_at: NaiveDateTime.from_iso8601!(i["created_at"]),
+          updated_at: NaiveDateTime.from_iso8601!(i["created_at"]),
           comments: Enum.map(i["comments"], fn c ->
             %{
               comment_id: "#{c["id"]}",
-              versions: [%{author: c["user"]["login"]}],
-              comment: c["body"]
+              versions: [%{
+                author: c["user"]["login"],
+                inserted_at: NaiveDateTime.from_iso8601!(c["created_at"]),
+                updated_at: NaiveDateTime.from_iso8601!(c["created_at"])
+              }],
+              comment: c["body"],
+              inserted_at: NaiveDateTime.from_iso8601!(c["created_at"]),
+              updated_at: NaiveDateTime.from_iso8601!(c["created_at"])
             }
           end)
         }
@@ -67,8 +74,6 @@ defmodule AppWeb.EventTypeHandlers do
     # save issue
     Enum.each(issues, fn i ->
       changeset = Issue.changeset(%Issue{}, i)
-      time = NaiveDateTime.from_iso8601!(i.created_at)
-      changeset = Changeset.put_change(changeset, :inserted_at, time)
       issue = Repo.insert!(changeset)
 
       s3_data = IssueHelper.get_s3_content(issue, comments_body)
