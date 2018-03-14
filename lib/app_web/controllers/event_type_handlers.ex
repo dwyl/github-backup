@@ -1,6 +1,7 @@
 defmodule AppWeb.EventTypeHandlers do
   use AppWeb, :controller
   alias App.{Comment, Issue, Repo}
+  alias App.Helpers.IssueHelper
   alias Ecto.Changeset
   alias AppWeb.MetaTable
 
@@ -14,8 +15,57 @@ defmodule AppWeb.EventTypeHandlers do
 
   def new_installation(conn, payload) do
     token = @github_api.get_installation_token(payload["installation"]["id"])
-    issues = @github_api.get_issues(token, payload, 1, [])
-    comments = @github_api.get_comments(token, payload)
+    repositories = payload["repositories"]
+
+    repo_data = Enum.map(repositories, fn r ->
+      issues = @github_api.get_issues(token, r["full_name"], 1, [])
+      comments = @github_api.get_comments(token, r["full_name"], 1, [])
+      issues = IssueHelper.attach_comments(issues, comments)
+      %{
+        repository: r,
+        issues: issues,
+      }
+    end)
+
+    # create list of issue schema
+    issues = Enum.flat_map(repo_data, fn r ->
+      r.issues
+      |> Enum.map(fn i ->
+        %{
+          pull_request: Map.has_key?(i, "pull_request"),
+          issue_id: i["id"],
+          title: i["title"],
+          description: i["body"],
+          issue_author: i["user"]["login"],
+          comments: Enum.map(i["comments"], fn c ->
+            %{
+              comment_id: "#{c["id"]}",
+              versions: [%{author: c["user"]["login"]}],
+              comment: c["body"]
+            }
+          end)
+        }
+      end)
+    end)
+
+    # Add description issue has comment too!
+    issues = IssueHelper.issues_as_comments(issues)
+
+    # filter issue to remove PRs
+    issues = IssueHelper.get_issues(issues)
+
+    # create map for comments: %{comment_id => comment_text, ...}
+    comments_body = IssueHelper.get_map_comments(issues)
+
+    # save issue
+    Enum.each(issues, fn i ->
+      changeset = Issue.changeset(%Issue{}, i)
+      issue = Repo.insert!(changeset)
+
+      s3_data = IssueHelper.get_s3_content(issue, comments_body)
+      content = Poison.encode!(s3_data)
+      @s3_api.save_comment(issue.issue_id, content)
+    end)
 
     conn
     |> put_status(200)
