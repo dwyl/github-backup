@@ -36,9 +36,14 @@ defmodule AppWeb.Helpers.View do
 
   def display_markdown(text) do
     text
+    |> sanitize_html
     |> detect_checkboxes
     |> Earmark.as_html!(%Earmark.Options{breaks: true})
     |> raw
+  end
+
+  def sanitize_html(html_comment) do
+    HtmlSanitizeEx.basic_html(html_comment)
   end
 
   def detect_checkboxes(text) do
