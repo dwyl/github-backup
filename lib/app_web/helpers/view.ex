@@ -3,9 +3,14 @@ defmodule AppWeb.Helpers.View do
   Helper functions for views to use
   """
   use Phoenix.HTML
-  import Timex
 
   @shared_classes "ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative"
+  @checked_box "<input type=\'checkbox\' checked=\'checked\' disabled>"
+  @unchecked_box "<input type=\'checkbox\' disabled>"
+  @regex_unchecked ~r/^[-,*,+] \[\s\]|\r\n[-,*,+] \[\s\]/
+  @regex_unchecked_inc_text ~r/^[-,*,+]\s\[\s\]\s\S+|\r\n[-,*,+]\s\[\s\]\s\S+/
+  @regex_checked ~r/\r\n[-,*,+] \[[X,x]\]|^[-,*,+] \[[X,x]\]/
+  @regex_checked_inc_text ~r/\r\n[-,*,+] \[[X,x]\] \S+|^[-,*,+] \[[X,x]\] \S+/
 
   def format_date(date) do
     date
@@ -31,8 +36,30 @@ defmodule AppWeb.Helpers.View do
 
   def display_markdown(text) do
     text
-    |> Earmark.as_html!
+    |> detect_checkboxes
+    |> Earmark.as_html!(%Earmark.Options{breaks: true})
     |> raw
   end
 
+  def detect_checkboxes(text) do
+    text
+    |> replace_checked_boxes
+    |> replace_unchecked_boxes
+  end
+
+  def replace_checked_boxes(text) do
+    if String.match?(text, @regex_checked_inc_text) do
+      String.replace(text, @regex_checked, "\r\n " <> @checked_box)
+    else
+      text
+    end
+  end
+
+  def replace_unchecked_boxes(text) do
+    if String.match?(text, @regex_unchecked_inc_text) do
+      String.replace(text, @regex_unchecked, "\r\n " <> @unchecked_box)
+    else
+      text
+    end
+  end
 end
