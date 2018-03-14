@@ -10,7 +10,7 @@
       <p class="gh-gray f3 center pv3 mb0">
         <i class="fas fa-trash pa3 mr2 bg-light-gray tc br-100"></i>
         <strong><%= @comment_details.deleted_by %></strong>
-        deleted this comment on <%= format_date @comment_details.updated_at %>
+        deleted this comment on <%= format_date @comment_details.inserted_at %>
       </p>
     <% end %>
 
