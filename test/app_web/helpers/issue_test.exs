@@ -40,6 +40,8 @@ defmodule AppWeb.IssueHelperTest do
         issue_id: "1",
         issue_author: "me",
         description: "new issue",
+        inserted_at: "2018",
+        updated_at: "2018",
         comments: []
       }
     ]
@@ -48,11 +50,21 @@ defmodule AppWeb.IssueHelperTest do
         issue_id: "1",
         issue_author: "me",
         description: "new issue",
+        inserted_at: "2018",
+        updated_at: "2018",
         comments: [
           %{
             comment_id: "1_1",
             comment: "new issue",
-            versions: [%{author: "me"}]
+            inserted_at: "2018",
+            updated_at: "2018",
+            versions: [
+              %{
+                author: "me",
+                inserted_at: "2018",
+                updated_at: "2018"
+                }
+              ]
           }
         ]
       }

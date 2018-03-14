@@ -17,7 +17,7 @@ defmodule App.Version do
   @doc false
   def changeset(%Version{} = version, attrs) do
     version
-    |> cast(attrs, [:author])
+    |> cast(attrs, [:author, :inserted_at, :updated_at])
     |> validate_required([:author])
   end
 end

@@ -20,7 +20,7 @@ defmodule App.Comment do
   @doc false
   def changeset(%Comment{} = comment, attrs \\ %{}) do
     comment
-    |> cast(attrs, [:comment_id])
+    |> cast(attrs, [:comment_id, :inserted_at, :updated_at])
     |> cast_assoc(:versions, require: true)
     |> validate_required([:comment_id])
   end
