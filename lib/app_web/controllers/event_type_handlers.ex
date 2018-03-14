@@ -13,6 +13,12 @@ defmodule AppWeb.EventTypeHandlers do
   Determines the type of event received by the Github Webhooks requests
   """
 
+  def unknow_event(conn) do
+    conn
+    |> put_status(404)
+    |> json(%{ok: "event unkown"})
+  end
+
   def new_installation(conn, payload) do
     token = @github_api.get_installation_token(payload["installation"]["id"])
     repositories = payload["repositories"]

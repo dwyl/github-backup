@@ -13,8 +13,13 @@ defmodule AppWeb.EventType do
          # type("installation_repositories", action, conn, payload)
       "issues" -> type("issues", action, conn, payload)
       "issue_comment" -> type("issue_comment", action, conn, payload)
-      _ -> nil
+      _ -> type("unknow", conn)
+
     end
+  end
+
+  defp type("unknow", conn) do
+    EventTypeHandlers.unknow_event(conn)
   end
 
   defp type("installation", action, conn, payload) do
