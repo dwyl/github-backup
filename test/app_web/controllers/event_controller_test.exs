@@ -4,13 +4,14 @@ defmodule AppWeb.EventTestController do
   alias Plug.Conn
 
   @fixtures [
-    %{payload: "installation", event: "installation", json_reply: "new installation"},
-    %{payload: "issue_opened", event: "issues", json_reply: "issue created"},
-    %{payload: "issue_title_edited", event: "issues", json_reply: "issue edited"},
-    %{payload: "issue_edited", event: "issues", json_reply: "issue edited"},
-    %{payload: "comment_created", event: "issue_comment", json_reply: "comment created"},
-    %{payload: "comment_edited", event: "issue_comment", json_reply: "comment edited"},
-    %{payload: "comment_deleted", event: "issue_comment", json_reply: "comment deleted"}
+    %{payload: "installation", event: "installation", json_reply: "new installation", status: 200},
+    %{payload: "issue_opened", event: "issues", json_reply: "issue created", status: 200},
+    %{payload: "issue_title_edited", event: "issues", json_reply: "issue edited", status: 200},
+    %{payload: "issue_edited", event: "issues", json_reply: "issue edited", status: 200},
+    %{payload: "comment_created", event: "issue_comment", json_reply: "comment created", status: 200},
+    %{payload: "comment_edited", event: "issue_comment", json_reply: "comment edited", status: 200},
+    %{payload: "comment_deleted", event: "issue_comment", json_reply: "comment deleted", status: 200},
+    %{payload: "integration_installation", event: "integration_installation", json_reply: "event unknow", status: 404}
   ]
   |> Enum.map(&(%{&1 | payload: "./test/fixtures/#{&1.payload}.json"}))
 
@@ -20,7 +21,7 @@ defmodule AppWeb.EventTestController do
       conn = conn
       |> Conn.put_req_header("x-github-event", "#{fixture.event}")
       |> post("/event/new", payload)
-      assert json_response(conn, 200)
+      assert json_response(conn, fixture.status)
     end
   end
 end
