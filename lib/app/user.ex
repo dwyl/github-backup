@@ -1,7 +1,7 @@
 defmodule App.User do
   use Ecto.Schema
   import Ecto.Changeset
-  alias App.{User, Issue, Comment, Version}
+  alias App.{User, Comment, Version}
 
   @moduledoc """
   user schema, define changeset to validate issue params
@@ -13,8 +13,8 @@ defmodule App.User do
     field :avatar_url, :string
     field :html_url, :string
 
-    has_many :comments, Version
-    has_many :issues, Issue
+    has_many :comments, Comment, foreign_key: :deleted_by
+    has_many :versions, Version, foreign_key: :author
 
     timestamps()
   end

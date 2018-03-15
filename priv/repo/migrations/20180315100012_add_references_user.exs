@@ -4,11 +4,12 @@ defmodule App.Repo.Migrations.AddReferencesUser do
   def change do
     alter table(:versions) do
       remove :author
-      add :user_id, references :users
+      add :author, references(:users, column: :id)
     end
 
     alter table(:comments) do
-      modify :deleted_by, references(:users, column: :id, type: :integer)
+      remove :deleted_by
+      add :deleted_by, references(:users, column: :id)
     end
 
   end
