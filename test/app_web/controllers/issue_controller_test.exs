@@ -1,16 +1,25 @@
 defmodule AppWeb.IssueControllerTest do
   use AppWeb.ConnCase
-  alias App.{Issue, Repo}
+  alias App.{Issue, User, Repo}
 
   describe "loads issue page" do
     setup do
+      user = %{
+        login: "user_login",
+        user_id: 1,
+        avatar_url: "/avatar.jpg",
+        html_url: "/user/1"
+      }
+      user_changeset = User.changeset(%User{}, user)
+      user = Repo.insert!(user_changeset)
+
       issue_params = %{
         issue_id: 1,
         title: "Test issue title",
         comments: [
           %{
             comment_id: "1_1",
-            versions: [%{author: "SimonLab"}]
+            versions: [%{author: user.id}]
           }
         ]
       }

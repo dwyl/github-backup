@@ -10,7 +10,6 @@ defmodule App.Comment do
   schema "comments" do
     field :comment_id, :string
     field :deleted, :boolean
-    field :deleted_by, :integer
     belongs_to :issue, Issue
     belongs_to :user, User, foreign_key: :deleted_by
     has_many :versions, Version

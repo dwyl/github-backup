@@ -8,7 +8,7 @@ defmodule App.Version do
   """
 
   schema "versions" do
-    field :author, :integer
+    # field :author, :integer
     belongs_to :comment, Comment
     belongs_to :user, User, foreign_key: :author
 
