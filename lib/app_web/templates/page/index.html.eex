@@ -1,8 +1,47 @@
-<section class="tc pb4">
-  <h1>Github Backup</h1>
-  <h2 class="f2">Backup all of your issues for offline use.</h2>
+<section class="pv6 ph7 bg-moon-gray center">
+  <h2 class="f-subheadline fw8">
+    Keep the history<br>
+    of your issues<br>
+    and comments.
+  </h2>
+  <p class="f2 pv4 pr5">
+    <strong class="gh-light-teal fw8">Gitbu</strong>
+    has been created so you never lose track of the history of your issues
+    and comments. Find out what was added, when and by who.
+  </p>
+</section>
+<section class="pv5 w-80 center tc f2">
+<div class="w-30 dib tl v-top ph4">
+
+  <!-- Add an icon or screenshot here -->
+
+  <h4 class="lh-copy">DOWNLOAD THE APP</h4>
+  <p class="f4 lh-copy">
+    Find the app in the Github Marketplace and download it. Choose which
+    organisations and repositories to use the app with.
+  </p>
+</div>
+<div class="w-30 dib tl v-top ph4">
+
+  <!-- Add an icon or screenshot here -->
+
+  <h4 class="lh-copy">MAKE A CHANGE</h4>
+  <p class="f4">
+    Create a new issue/ add/edit a comment/ close a comment/ reopen a comment.
+  </p>
+</div>
+<div class="w-30 dib tl v-top ph4">
+
+  <!-- Add an icon or screenshot here -->
+
+  <h4 class="lh-copy">TRACK YOUR CHANGES</h4>
+  <p class="f4">
+    Select the issue meta table in the issue description and see your changes on
+    Gitbu!
+  </p>
+</div>
 </section>
 
+<!-- UPCOMING FEATURES SECTION -->
 
-
-</section>
+<!-- SEE DWYL SECTION -->
