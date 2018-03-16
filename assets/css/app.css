@@ -12,6 +12,10 @@
   background-color: #4ABDAC;
 }
 
+.gh-light-teal {
+  color: #60c3b4;
+}
+
 /* Comment box arrow */
 .comment:after, .comment:before {
 	right: 100%;
