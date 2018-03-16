@@ -19,23 +19,13 @@ defmodule App.User do
     timestamps()
   end
 
-  @doc false
-  def changeset(%User{} = user, attrs) do
+  @required_attrs ~w(user_id login avatar_url html_url)a
+  @optional_attrs ~w(inserted_at updated_at)a
+  def changeset(%User{} = user, attrs \\ %{}) do
     user
-    |> cast(attrs, [
-      :user_id,
-      :login,
-      :avatar_url,
-      :html_url,
-      :inserted_at,
-      :updated_at]
-    )
+    |> cast(attrs, @optional_attrs ++ @required_attrs)
     |> cast_assoc(:comments, require: true)
-    |> validate_required([
-      :user_id,
-      :login,
-      :avatar_url,
-      :html_url,
-    ])
+    |> validate_required(@required_attrs)
   end
+
 end

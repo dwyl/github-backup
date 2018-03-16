@@ -4,14 +4,12 @@ defmodule App.Helpers.UserHelper do
   """
   alias App.{Repo, User}
 
-  def udpate_or_update_user(params) do
-    user = Repo.get_by(User, user_id: params.user_id)
-    if user do
-      changeset = User.changeset(user, params)
-      Repo.update!(changeset)
-    else
-      changeset = User.changeset(%User{}, params)
-      Repo.insert!(changeset)
+  def insert_or_update_user(%{user_id: user_id} = params) do
+    case Repo.get_by(User, user_id: user_id) do
+      nil -> %User{user_id: user_id}
+      user -> user
     end
+    |> User.changeset(params)
+    |> Repo.insert_or_update!
   end
 end

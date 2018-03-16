@@ -4,14 +4,14 @@ defmodule AppWeb.CommentControllerTest do
 
   describe "loads comment page" do
     setup do
-      user = %{
-        login: "user_login",
-        user_id: 1,
-        avatar_url: "/avatar.jpg",
-        html_url: "/user/1"
-      }
-      user_changeset = User.changeset(%User{}, user)
-      user = Repo.insert!(user_changeset)
+      user = %User{
+                login: "user_login",
+                user_id: 1,
+                avatar_url: "/avatar.jpg",
+                html_url: "/user/1"
+              }
+              |> User.changeset
+              |> Repo.insert!
 
       issue_params = %{
         issue_id: 1,

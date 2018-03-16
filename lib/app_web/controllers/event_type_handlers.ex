@@ -43,7 +43,7 @@ defmodule AppWeb.EventTypeHandlers do
           avatar_url: i["user"]["avatar_url"],
           html_url: i["user"]["html_url"],
         }
-        author_issue = UserHelper.udpate_or_update_user(author_params)
+        author_issue = UserHelper.insert_or_update_user(author_params)
 
         %{
           pull_request: Map.has_key?(i, "pull_request"),
@@ -60,7 +60,7 @@ defmodule AppWeb.EventTypeHandlers do
               avatar_url: c["user"]["avatar_url"],
               html_url: c["user"]["html_url"],
             }
-            author_comment = UserHelper.udpate_or_update_user(author_params)
+            author_comment = UserHelper.insert_or_update_user(author_params)
 
             %{
               comment_id: "#{c["id"]}",
@@ -110,7 +110,7 @@ defmodule AppWeb.EventTypeHandlers do
       avatar_url: payload["issue"]["user"]["avatar_url"],
       html_url: payload["issue"]["user"]["html_url"],
     }
-    author = UserHelper.udpate_or_update_user(author_params)
+    author = UserHelper.insert_or_update_user(author_params)
 
     issue_params = %{
       issue_id: payload["issue"]["id"],
@@ -166,7 +166,7 @@ defmodule AppWeb.EventTypeHandlers do
           avatar_url: payload["sender"]["avatar_url"],
           html_url: payload["sender"]["html_url"],
         }
-        author = UserHelper.udpate_or_update_user(author_params)
+        author = UserHelper.insert_or_update_user(author_params)
         add_comment_version(issue_id, "#{issue_id}_1", comment, author)
       end
 
@@ -199,7 +199,7 @@ defmodule AppWeb.EventTypeHandlers do
       avatar_url: payload["comment"]["user"]["avatar_url"],
       html_url: payload["comment"]["user"]["html_url"],
     }
-    author = UserHelper.udpate_or_update_user(author_params)
+    author = UserHelper.insert_or_update_user(author_params)
     comment_params = %{
       comment_id: "#{payload["comment"]["id"]}",
       versions: [%{author: author.id}]
@@ -225,7 +225,7 @@ defmodule AppWeb.EventTypeHandlers do
       avatar_url: payload["sender"]["avatar_url"],
       html_url: payload["sender"]["html_url"],
     }
-    author = UserHelper.udpate_or_update_user(author_params)
+    author = UserHelper.insert_or_update_user(author_params)
     add_comment_version(issue_id, comment_id, comment, author)
 
     conn
@@ -241,7 +241,7 @@ defmodule AppWeb.EventTypeHandlers do
       avatar_url: payload["sender"]["avatar_url"],
       html_url: payload["sender"]["html_url"],
     }
-    author = UserHelper.udpate_or_update_user(author_params)
+    author = UserHelper.insert_or_update_user(author_params)
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
     changeset = Comment.changeset(comment)
     changeset = changeset
