@@ -149,15 +149,31 @@ defmodule AppWeb.EventTypeHandlers do
       event: "closed"
     }
     issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
-    changeset = %IssueStatus{}
-                |> IssueStatus.changeset(issue_status_params)
-                |> Changeset.put_change(:issue_id, issue.id)
 
-    issue_status = Repo.insert!(changeset)
+    %IssueStatus{}
+    |> IssueStatus.changeset(issue_status_params)
+    |> Changeset.put_change(:issue_id, issue.id)
+    |> Repo.insert!
 
     conn
     |> put_status(200)
     |> json(%{ok: "issue closed"})
+  end
+
+  def issue_reopened(conn, payload) do
+    issue_status_params = %{
+      event: "reopened"
+    }
+    issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
+
+    %IssueStatus{}
+    |> IssueStatus.changeset(issue_status_params)
+    |> Changeset.put_change(:issue_id, issue.id)
+    |> Repo.insert!
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue reopened"})
   end
 
   def add_comment_version(issue_id, comment_id, content, author) do

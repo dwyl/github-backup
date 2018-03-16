@@ -40,8 +40,7 @@ defmodule AppWeb.EventType do
       "opened" -> EventTypeHandlers.issue_created(conn, payload)
       "edited" -> EventTypeHandlers.issue_edited(conn, payload)
       "closed" -> EventTypeHandlers.issue_closed(conn, payload)
-      # See #71 - https://git.io/vAp3b
-      # "reopened" -> :issue_reopened
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 
