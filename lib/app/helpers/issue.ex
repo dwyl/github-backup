@@ -35,7 +35,7 @@ defmodule App.Helpers.IssueHelper do
       comment_issue = %{
         comment_id: "#{i.issue_id}_1",
         versions: [%{
-          author: i.issue_author,
+          author: i.issue_author.id,
           inserted_at: i.inserted_at,
           updated_at: i.updated_at
           }],
