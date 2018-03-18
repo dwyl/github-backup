@@ -17,7 +17,7 @@ defmodule App.Issue do
   end
 
   @doc false
-  def changeset(%Issue{} = issue, attrs) do
+  def changeset(%Issue{} = issue, attrs \\ %{}) do
     issue
     |> cast(attrs, [:issue_id, :title, :inserted_at, :updated_at])
     |> cast_assoc(:comments, require: true)

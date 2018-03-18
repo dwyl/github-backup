@@ -24,11 +24,11 @@
 
         <div class="flex">
           <div class="mv3 w3">
-            <img class="br2"src="/images/user_avatar.png" alt="user avatar">
+            <img class="br2"src="<%= version.user.avatar_url %>" alt="user avatar">
           </div>
           <div class="<%= style_comments(i) %>">
             <p class="pa3 bb gh-b--light-gray bg-light-gray gh-gray mb0 cf">
-              <strong><%= version.author %></strong>
+              <strong><%= version.user.login %></strong>
               commented <%= format_date version.inserted_at %>
             </p>
             <span class="mv0 markdown_text">

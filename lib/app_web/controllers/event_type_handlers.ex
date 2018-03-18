@@ -1,7 +1,7 @@
 defmodule AppWeb.EventTypeHandlers do
   use AppWeb, :controller
-  alias App.{Comment, Issue, Repo, IssueStatus}
-  alias App.Helpers.IssueHelper
+  alias App.{Comment, Issue, IssueStatus, Repo, User}
+  alias App.Helpers.{IssueHelper, UserHelper}
   alias Ecto.Changeset
   alias AppWeb.MetaTable
 
@@ -37,19 +37,35 @@ defmodule AppWeb.EventTypeHandlers do
     issues = Enum.flat_map(repo_data, fn r ->
       r.issues
       |> Enum.map(fn i ->
+        author_params = %{
+          login: i["user"]["login"],
+          user_id: i["user"]["id"],
+          avatar_url: i["user"]["avatar_url"],
+          html_url: i["user"]["html_url"],
+        }
+        author_issue = UserHelper.insert_or_update_user(author_params)
+
         %{
           pull_request: Map.has_key?(i, "pull_request"),
           issue_id: i["id"],
           title: i["title"],
           description: i["body"],
-          issue_author: i["user"]["login"],
+          issue_author: author_issue,
           inserted_at: NaiveDateTime.from_iso8601!(i["created_at"]),
           updated_at: NaiveDateTime.from_iso8601!(i["created_at"]),
           comments: Enum.map(i["comments"], fn c ->
+            author_params = %{
+              login: c["user"]["login"],
+              user_id: c["user"]["id"],
+              avatar_url: c["user"]["avatar_url"],
+              html_url: c["user"]["html_url"],
+            }
+            author_comment = UserHelper.insert_or_update_user(author_params)
+
             %{
               comment_id: "#{c["id"]}",
               versions: [%{
-                author: c["user"]["login"],
+                author: author_comment.id,
                 inserted_at: NaiveDateTime.from_iso8601!(c["created_at"]),
                 updated_at: NaiveDateTime.from_iso8601!(c["created_at"])
               }],
@@ -87,13 +103,22 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_created(conn, payload) do
+
+    author_params = %{
+      login: payload["issue"]["user"]["login"],
+      user_id: payload["issue"]["user"]["id"],
+      avatar_url: payload["issue"]["user"]["avatar_url"],
+      html_url: payload["issue"]["user"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
+
     issue_params = %{
       issue_id: payload["issue"]["id"],
       title: payload["issue"]["title"],
       comments: [
         %{
           comment_id: "#{payload["issue"]["id"]}_1",
-          versions: [%{author: payload["issue"]["user"]["login"]}]
+          versions: [%{author: author.id}]
         }
       ]
     }
@@ -135,7 +160,13 @@ defmodule AppWeb.EventTypeHandlers do
       not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
       if body_change && not_bot do
         comment = payload["issue"]["body"]
-        author = payload["sender"]["login"]
+        author_params = %{
+          login: payload["sender"]["login"],
+          user_id: payload["sender"]["id"],
+          avatar_url: payload["sender"]["avatar_url"],
+          html_url: payload["sender"]["html_url"],
+        }
+        author = UserHelper.insert_or_update_user(author_params)
         add_comment_version(issue_id, "#{issue_id}_1", comment, author)
       end
 
@@ -162,7 +193,7 @@ defmodule AppWeb.EventTypeHandlers do
 
   def add_comment_version(issue_id, comment_id, content, author) do
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
-    version_params = %{author: author}
+    version_params = %{author: author.id}
     changeset = Ecto.build_assoc(comment, :versions, version_params)
     version = Repo.insert!(changeset)
     update_s3_file(issue_id, version.id, content)
@@ -178,9 +209,16 @@ defmodule AppWeb.EventTypeHandlers do
   def comment_created(conn, payload) do
     issue_id = payload["issue"]["id"]
     issue = Repo.get_by!(Issue, issue_id: issue_id)
+    author_params = %{
+      login: payload["comment"]["user"]["login"],
+      user_id: payload["comment"]["user"]["id"],
+      avatar_url: payload["comment"]["user"]["avatar_url"],
+      html_url: payload["comment"]["user"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     comment_params = %{
       comment_id: "#{payload["comment"]["id"]}",
-      versions: [%{author: payload["comment"]["user"]["login"]}]
+      versions: [%{author: author.id}]
     }
     changeset = Ecto.build_assoc(issue, :comments, comment_params)
     comment = Repo.insert!(changeset)
@@ -197,7 +235,13 @@ defmodule AppWeb.EventTypeHandlers do
     issue_id = payload["issue"]["id"]
     comment_id = payload["comment"]["id"]
     comment = payload["comment"]["body"]
-    author = payload["sender"]["login"]
+    author_params = %{
+      login: payload["sender"]["login"],
+      user_id: payload["sender"]["id"],
+      avatar_url: payload["sender"]["avatar_url"],
+      html_url: payload["sender"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     add_comment_version(issue_id, comment_id, comment, author)
 
     conn
@@ -207,12 +251,18 @@ defmodule AppWeb.EventTypeHandlers do
 
   def comment_deleted(conn, payload) do
     comment_id = payload["comment"]["id"]
-    author = payload["sender"]["login"]
+    author_params = %{
+      login: payload["sender"]["login"],
+      user_id: payload["sender"]["id"],
+      avatar_url: payload["sender"]["avatar_url"],
+      html_url: payload["sender"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
     changeset = Comment.changeset(comment)
     changeset = changeset
                 |> Changeset.put_change(:deleted, true)
-                |> Changeset.put_change(:deleted_by, author)
+                |> Changeset.put_change(:deleted_by, author.id)
     Repo.update!(changeset)
 
     conn
