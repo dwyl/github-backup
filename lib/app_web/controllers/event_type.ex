@@ -40,10 +40,8 @@ defmodule AppWeb.EventType do
     case action do
       "opened" -> EventTypeHandlers.issue_created(conn, payload)
       "edited" -> EventTypeHandlers.issue_edited(conn, payload)
-      # See #70 - https://git.io/vAp3y
-      # "closed" -> :issue_closed
-      # See #71 - https://git.io/vAp3b
-      # "reopened" -> :issue_reopened
+      "closed" -> EventTypeHandlers.issue_closed(conn, payload)
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 
@@ -60,6 +58,7 @@ defmodule AppWeb.EventType do
       "opened" -> EventTypeHandlers.issue_created(conn, payload)
       "edited" -> EventTypeHandlers.issue_edited(conn, payload)
       "closed" -> EventTypeHandlers.issue_closed(conn, payload)
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 end
