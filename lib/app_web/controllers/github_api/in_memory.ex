@@ -57,7 +57,6 @@ defmodule AppWeb.GithubAPI.InMemory do
     }
   }
 
-
   def get_installation_token(_installation_id) do
     "token_installation_1234"
   end

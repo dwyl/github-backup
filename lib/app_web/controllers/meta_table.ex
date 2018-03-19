@@ -1,4 +1,8 @@
 defmodule AppWeb.MetaTable do
+@moduledoc """
+  Generates a markdown table to track edits of an issue and linking to the Gitbu
+  site.
+"""
 alias AppWeb.Endpoint
 
   def get_meta_table(issue_id) do
