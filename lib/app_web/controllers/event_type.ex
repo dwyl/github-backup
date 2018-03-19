@@ -13,6 +13,7 @@ defmodule AppWeb.EventType do
          # type("installation_repositories", action, conn, payload)
       "issues" -> type("issues", action, conn, payload)
       "issue_comment" -> type("issue_comment", action, conn, payload)
+      "pull_request"-> type("pull_request", action, conn, payload)
       _ -> type("unknow", conn)
 
     end
@@ -51,6 +52,13 @@ defmodule AppWeb.EventType do
       "created" -> EventTypeHandlers.comment_created(conn, payload)
       "edited" -> EventTypeHandlers.comment_edited(conn, payload)
       "deleted" -> EventTypeHandlers.comment_deleted(conn, payload)
+    end
+  end
+
+  defp type("pull_request", action, conn, payload) do
+    case action do
+      "opened" -> EventTypeHandlers.issue_created(conn, payload)
+      "edited" -> EventTypeHandlers.issue_edited(conn, payload)
     end
   end
 end

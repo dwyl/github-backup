@@ -23,11 +23,11 @@ defmodule AppWeb.IssueController do
 
     {:ok, %{body: comments_text}} = @s3_api.get_issue(issue_id)
     comments_text = comments_text |> Poison.decode!
-
     render(
       conn,
       "index.html",
       issue_title: issue_data.title,
+      pull_request: issue_data.pull_request,
       comments_text: comments_text,
       comment_details: comments_details
     )

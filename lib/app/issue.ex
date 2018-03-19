@@ -10,16 +10,19 @@ defmodule App.Issue do
   schema "issues" do
     field :issue_id, :integer
     field :title, :string
+    field :pull_request, :boolean
     has_many :comments, Comment
 
     timestamps()
   end
 
   @doc false
+  @required_attrs ~w(issue_id title)a
+  @optional_attrs ~w(pull_request inserted_at updated_at)a
   def changeset(%Issue{} = issue, attrs \\ %{}) do
     issue
-    |> cast(attrs, [:issue_id, :title, :inserted_at, :updated_at])
+    |> cast(attrs, @optional_attrs ++ @required_attrs)
     |> cast_assoc(:comments, require: true)
-    |> validate_required([:issue_id, :title])
+    |> validate_required(@required_attrs)
   end
 end

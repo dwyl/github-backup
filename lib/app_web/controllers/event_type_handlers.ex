@@ -103,18 +103,30 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_created(conn, payload) do
+    token = @github_api.get_installation_token(payload["installation"]["id"])
+
+    issue = if payload["pull_request"] != nil do
+      repo_name = payload["repository"]["full_name"]
+      issue_number = payload["pull_request"]["number"]
+      @github_api.get_issue(token, repo_name, issue_number)
+    else
+      payload["issue"]
+    end
+
+    payload = Map.put(payload, "issue", issue)
 
     author_params = %{
       login: payload["issue"]["user"]["login"],
       user_id: payload["issue"]["user"]["id"],
       avatar_url: payload["issue"]["user"]["avatar_url"],
-      html_url: payload["issue"]["user"]["html_url"],
+      html_url: payload["issue"]["user"]["html_url"]
     }
     author = UserHelper.insert_or_update_user(author_params)
 
     issue_params = %{
       issue_id: payload["issue"]["id"],
       title: payload["issue"]["title"],
+      pull_request: Map.has_key?(payload, "pull_request"),
       comments: [
         %{
           comment_id: "#{payload["issue"]["id"]}_1",
@@ -137,9 +149,9 @@ defmodule AppWeb.EventTypeHandlers do
 
     meta_table = MetaTable.get_meta_table(payload["issue"]["id"])
     content = comment <> "\r\n\n" <> meta_table
+
     repo_name = payload["repository"]["full_name"]
     issue_number = payload["issue"]["number"]
-    token = @github_api.get_installation_token(payload["installation"]["id"])
     @github_api.add_meta_table(repo_name, issue_number, content, token)
 
     conn
@@ -148,31 +160,43 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_edited(conn, payload) do
-      issue_id = payload["issue"]["id"]
+    token = @github_api.get_installation_token(payload["installation"]["id"])
 
-      if Map.has_key?(payload["changes"], "title") do
-          issue = Repo.get_by!(Issue, issue_id: issue_id)
-          issue = Changeset.change issue, title: payload["issue"]["title"]
-          Repo.update!(issue)
-      end
+    issue = if payload["pull_request"] != nil do
+      repo_name = payload["repository"]["full_name"]
+      issue_number = payload["pull_request"]["number"]
+      @github_api.get_issue(token, repo_name, issue_number)
+    else
+      payload["issue"]
+    end
 
-      body_change = Map.has_key?(payload["changes"], "body")
-      not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
-      if body_change && not_bot do
-        comment = payload["issue"]["body"]
-        author_params = %{
-          login: payload["sender"]["login"],
-          user_id: payload["sender"]["id"],
-          avatar_url: payload["sender"]["avatar_url"],
-          html_url: payload["sender"]["html_url"],
-        }
-        author = UserHelper.insert_or_update_user(author_params)
-        add_comment_version(issue_id, "#{issue_id}_1", comment, author)
-      end
+    payload = Map.put(payload, "issue", issue)
 
-      conn
-      |> put_status(200)
-      |> json(%{ok: "issue edited"})
+    issue_id = payload["issue"]["id"]
+
+    if Map.has_key?(payload["changes"], "title") do
+        issue = Repo.get_by!(Issue, issue_id: issue_id)
+        issue = Changeset.change issue, title: payload["issue"]["title"]
+        Repo.update!(issue)
+    end
+
+    body_change = Map.has_key?(payload["changes"], "body")
+    not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
+    if body_change && not_bot do
+      comment = payload["issue"]["body"]
+      author_params = %{
+        login: payload["sender"]["login"],
+        user_id: payload["sender"]["id"],
+        avatar_url: payload["sender"]["avatar_url"],
+        html_url: payload["sender"]["html_url"],
+      }
+      author = UserHelper.insert_or_update_user(author_params)
+      add_comment_version(issue_id, "#{issue_id}_1", comment, author)
+    end
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue edited"})
   end
 
   def add_comment_version(issue_id, comment_id, content, author) do
@@ -253,4 +277,5 @@ defmodule AppWeb.EventTypeHandlers do
     |> put_status(200)
     |> json(%{ok: "comment deleted"})
   end
+
 end
