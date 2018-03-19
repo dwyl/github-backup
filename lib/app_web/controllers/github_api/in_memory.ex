@@ -50,6 +50,8 @@ defmodule AppWeb.GithubAPI.InMemory do
     "url" => "https://api.github.com/repos/SimonLab/github_app/issues/18",
     "user" => %{
       "login" => "bob",
+      "id" => 1,
+      "html_url" => "/bob",
       "avatar_url" => "https://avatars2.githubusercontent.com/u/6057298?v=4",
       "events_url" => "https://api.github.com/users/SimonLab/events{/privacy}",
     }

@@ -1,20 +1,29 @@
 defmodule AppWeb.EditCountControllerTest do
   use AppWeb.ConnCase
-  alias App.{Issue, Repo}
+  alias App.{Issue, User, Repo}
 
   describe "get svg count for an issue" do
     setup do
+      user = %User{
+                login: "user_login",
+                user_id: 1,
+                avatar_url: "/avatar.jpg",
+                html_url: "/user/1"
+              }
+              |> User.changeset
+              |> Repo.insert!
+
       issue_params = %{
         issue_id: 2,
         title: "Test issue title",
         comments: [
           %{
             comment_id: "2_1",
-            versions: [%{author: "SimonLab"}]
+            versions: [%{author: user.id}]
           },
           %{
             comment_id: "1111",
-            versions: [%{author: "SimonLab"}]
+            versions: [%{author: user.id}]
           }
         ]
       }
