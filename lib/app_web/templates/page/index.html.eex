@@ -1,47 +1,59 @@
-<section class="pv6 ph7 bg-moon-gray center">
-  <h2 class="f-subheadline fw8">
-    Keep the history<br>
-    of your issues<br>
-    and comments.
-  </h2>
-  <p class="f2 pv4 pr5">
-    <strong class="gh-light-teal fw8">Gitbu</strong>
-    has been created so you never lose track of the history of your issues
-    and comments. Find out what was added, when and by who.
-  </p>
+<section class="bg-light-gray">
+  <div class="pv3 pv6-ns w-80 w-75-ns center">
+    <h2 class="f-subheadline-ns f1 fw8">
+      Keep the history<br>
+      of your issues<br>
+      and comments.
+    </h2>
+    <p class="f2 pv4 pr5">
+      <strong class="gb-light-teal fw8">Gitbu</strong>
+      has been created so you never lose track of the history of your issues
+      and comments. Find out what was added, when and by who.
+    </p>
+  </div>
 </section>
-<section class="pv5 w-80 center tc f2">
-<div class="w-30 dib tl v-top ph4">
 
-  <!-- Add an icon or screenshot here -->
-
+<section class="pv4 pv6-ns w-80 center tc f2">
+<div class="w-30-ns dib-ns tc v-top ph4 pv4 pv0-ns">
+  <div class="w-100 center tc">
+    <i class="fas fa-arrow-circle-down"></i>
+  </div>
   <h4 class="lh-copy">DOWNLOAD THE APP</h4>
-  <p class="f4 lh-copy">
-    Find the app in the Github Marketplace and download it. Choose which
-    organisations and repositories to use the app with.
+  <p class="f3 lh-copy">
+    Find the app in the
+    <a href="https://github.com/marketplace" class="black underline">Github Marketplace</a>
+    and download it. Choose which organisations and repositories to use the app
+    with.
   </p>
 </div>
-<div class="w-30 dib tl v-top ph4">
-
-  <!-- Add an icon or screenshot here -->
-
+<div class="w-30-ns dib-ns tc v-top ph4 pv4 pv0-ns">
+  <div class="w-100 center tc">
+    <i class="fas fa-edit"></i>
+  </div>
   <h4 class="lh-copy">MAKE A CHANGE</h4>
-  <p class="f4">
-    Create a new issue/ add/edit a comment/ close a comment/ reopen a comment.
+  <p class="f3">
+    Create a new issue, add or edit a comment, close or reopen an issue.
   </p>
 </div>
-<div class="w-30 dib tl v-top ph4">
-
-  <!-- Add an icon or screenshot here -->
-
+<div class="w-30-ns dib-ns tc v-top ph4 pv4 pv0-ns">
+  <div class="w-100 center tc">
+    <i class="fas fa-eye"></i>
+  </div>
   <h4 class="lh-copy">TRACK YOUR CHANGES</h4>
-  <p class="f4">
+  <p class="f3">
     Select the issue meta table in the issue description and see your changes on
     Gitbu!
   </p>
 </div>
 </section>
 
-<!-- UPCOMING FEATURES SECTION -->
-
-<!-- SEE DWYL SECTION -->
+<section class="gb-bg-teal">
+  <div class="pv5 center tc w-80 w-75-ns">
+    <h1 class="white">Coming Soon</h1>
+    <p class="white f3 pv3">
+      Gitbu is currently in development and some features are still being built:
+    </p>
+    <p class="bg-white br-pill pv2 ph4 mt3 mb4 mh3 b dib gb-dark-gray">Github Authorisation</p>
+    <p class="bg-white br-pill pv2 ph4 mt3 mb4 mh3 b dib gb-dark-gray">Offline access</p>
+  </div>
+</section>
