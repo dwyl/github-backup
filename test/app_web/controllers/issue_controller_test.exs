@@ -29,7 +29,7 @@ defmodule AppWeb.IssueControllerTest do
               comments: [
                 %{
                   comment_id: "1_2",
-                  versions: [%{author: "SimonLab"}]
+                  versions: [%{author: user.id}]
                 }
               ],
               issue_status: [
