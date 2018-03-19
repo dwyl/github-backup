@@ -38,7 +38,7 @@ defmodule AppWeb.IssueHelperTest do
     issues = [
       %{
         issue_id: "1",
-        issue_author: "me",
+        issue_author: %{id: 1},
         description: "new issue",
         inserted_at: "2018",
         updated_at: "2018",
@@ -48,7 +48,7 @@ defmodule AppWeb.IssueHelperTest do
     expected = [
       %{
         issue_id: "1",
-        issue_author: "me",
+        issue_author: %{id: 1},
         description: "new issue",
         inserted_at: "2018",
         updated_at: "2018",
@@ -60,7 +60,7 @@ defmodule AppWeb.IssueHelperTest do
             updated_at: "2018",
             versions: [
               %{
-                author: "me",
+                author: 1,
                 inserted_at: "2018",
                 updated_at: "2018"
                 }

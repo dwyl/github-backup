@@ -14,7 +14,10 @@ defmodule AppWeb.IssueController do
       |> Repo.preload([
         issue_status: from(s in IssueStatus, order_by: [desc: s.inserted_at]),
         comments: [
-          versions: from(v in Version, order_by: [desc: v.inserted_at])
+          versions: {
+             from(v in Version, order_by: [desc: v.inserted_at]),
+            [:user]
+          }
         ]
       ])
 
