@@ -22,8 +22,8 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
-  <body class="mt0">
-    <nav class="w-100 pv3 pl2 gh-bg-teal shadow-1">
+  <body class="ma0">
+    <nav class="w-100 pv3 pl2 gb-bg-teal shadow-1">
       <a href="/">
         <img src="/images/dwyl-heart.png" class="w3 pl2" alt="dwyl logo">
       </a>

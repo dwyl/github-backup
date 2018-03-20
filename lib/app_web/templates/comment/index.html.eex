@@ -1,5 +1,5 @@
 <section class="w-90 w-50-ns center">
-  <div class="tc center pb2 mb4 bb gh-b--light-gray">
+  <div class="tc center pb2 mb4 bb gb-b--light-gray">
     <h1 class="pb3">Github Backup</h1>
     <h2 class="f2 tl"><%= @comment_details.issue.title %></h2>
   </div>
@@ -7,7 +7,7 @@
   <section class="tc">
 
     <%= if @comment_details.deleted == true do %>
-      <p class="gh-gray f3 center pv3 mb0">
+      <p class="gb-gray f3 center pv3 mb0">
         <i class="fas fa-trash pa3 mr2 bg-light-gray tc br-100"></i>
         <strong><%= @comment_details.deleted_by %></strong>
         deleted this comment on <%= format_date @comment_details.inserted_at %>
@@ -22,11 +22,11 @@
           <img class="br2"src="/images/user_avatar.png" alt="user avatar">
         </div>
         <%= if i != 0 do %>
-          <div class="ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative bg-moon-gray">
+          <div class="ml3 mv3 tl w-100 ba gb-b--light-gray br2 comment relative bg-moon-gray">
           <% else %>
-            <div class="ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative">
+            <div class="ml3 mv3 tl w-100 ba gb-b--light-gray br2 comment relative">
           <% end %>
-          <p class="pa3 bb gh-b--light-gray bg-light-gray gh-gray mb0 cf">
+          <p class="pa3 bb gb-b--light-gray bg-light-gray gb-gray mb0 cf">
             <strong><%= version.author %></strong>
             commented <%= format_date version.inserted_at %>
           </p>
