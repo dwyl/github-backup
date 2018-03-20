@@ -99,4 +99,11 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     end
   end
 
+  def get_issue(token, repo, issue_number) do
+    "#{@github_root}/repos/#{repo}/issues/#{issue_number}"
+    |> HTTPoison.get!(header(token), [])
+    |> Map.fetch!(:body)
+    |> PP.parse!
+  end
+
 end

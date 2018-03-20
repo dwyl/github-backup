@@ -57,6 +57,39 @@ defmodule AppWeb.GithubAPI.InMemory do
     }
   }
 
+  @issue2 %{
+    "assignee" => nil,
+    "assignees" => [],
+    "author_association" => "OWNER",
+    "body" => "a",
+    "closed_at" => "2017-06-16T14:55:39Z",
+    "comments" => [@comment],
+    "comments_url" => "https://api.github.com/repos/SimonLab/github_app/issues/18/comments",
+    "created_at" => "2017-06-16T14:52:18Z",
+    "events_url" => "https://api.github.com/repos/SimonLab/github_app/issues/18/events",
+    "html_url" => "https://github.com/SimonLab/github_app/pull/18",
+    "id" => 836506221,
+    "labels" => [],
+    "labels_url" => "https://api.github.com/repos/SimonLab/github_app/issues/18/labels{/name}",
+    "locked" => false,
+    "milestone" => nil,
+    "number" => 18,
+    "performed_via_github_app" => nil,
+    "repository_url" => "https://api.github.com/repos/SimonLab/github_app",
+    "state" => "closed",
+    "title" => "aaaaaaa",
+    "updated_at" => "2017-06-16T14:55:39Z",
+    "url" => "https://api.github.com/repos/SimonLab/github_app/issues/18",
+    "user" => %{
+      "login" => "bob",
+      "id" => 1,
+      "html_url" => "/bob",
+      "avatar_url" => "https://avatars2.githubusercontent.com/u/6057298?v=4",
+      "events_url" => "https://api.github.com/users/SimonLab/events{/privacy}",
+    }
+  }
+
+
   def get_installation_token(_installation_id) do
     "token_installation_1234"
   end
@@ -69,7 +102,11 @@ defmodule AppWeb.GithubAPI.InMemory do
     [@comment]
   end
 
-  def add_meta_table(repo_name, issue_id, content, token) do
+  def add_meta_table(_repo_name, _issue_id, _content, _token) do
     :ok
+  end
+
+  def get_issue(_token, _repo, _issue_number) do
+    @issue2
   end
 end
