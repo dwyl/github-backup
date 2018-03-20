@@ -7,6 +7,7 @@ defmodule AppWeb.EventTestController do
     %{payload: "installation", event: "installation", json_reply: "new installation", status: 200},
     %{payload: "issue_opened", event: "issues", json_reply: "issue created", status: 200},
     %{payload: "issue_closed", event: "issues", json_reply: "issue closed", status: 200},
+    %{payload: "issue_reopened", event: "issues", json_reply: "issue reopened", status: 200},
     %{payload: "issue_title_edited", event: "issues", json_reply: "issue edited", status: 200},
     %{payload: "issue_edited", event: "issues", json_reply: "issue edited", status: 200},
     %{payload: "comment_created", event: "issue_comment", json_reply: "comment created", status: 200},

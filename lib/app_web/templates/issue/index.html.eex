@@ -2,9 +2,14 @@
   <div class="tc center pb2 mb4 bb gh-b--light-gray cf">
     <h1 class="pb3">Github Backup</h1>
     <h2 class="f2 tl"><%= @issue_title %></h2>
-    <%= if @issue_closed == "closed" do %>
+    <%= if @issue_status == "closed" do %>
       <p class="bg-dark-red white w4 br2 f3 center pv2 mv2 mb0 fl">
         Closed
+      </p>
+    <% end %>
+    <%= if @issue_status == "reopened" do %>
+      <p class="bg-green white w4 br2 f3 center pv2 mv2 mb0 fl">
+        Reopened
       </p>
     <% end %>
   </div>
