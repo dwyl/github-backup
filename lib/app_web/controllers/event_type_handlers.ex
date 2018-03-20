@@ -1,6 +1,6 @@
 defmodule AppWeb.EventTypeHandlers do
   use AppWeb, :controller
-  alias App.{Comment, Issue, Repo, User}
+  alias App.{Comment, Issue, IssueStatus, Repo, User}
   alias App.Helpers.{IssueHelper, UserHelper}
   alias Ecto.Changeset
   alias AppWeb.MetaTable
@@ -173,6 +173,22 @@ defmodule AppWeb.EventTypeHandlers do
       conn
       |> put_status(200)
       |> json(%{ok: "issue edited"})
+  end
+
+  def issue_closed(conn, payload) do
+    issue_status_params = %{
+      event: "closed"
+    }
+    issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
+    changeset = %IssueStatus{}
+                |> IssueStatus.changeset(issue_status_params)
+                |> Changeset.put_change(:issue_id, issue.id)
+
+    issue_status = Repo.insert!(changeset)
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue closed"})
   end
 
   def add_comment_version(issue_id, comment_id, content, author) do
