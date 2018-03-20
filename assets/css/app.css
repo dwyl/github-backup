@@ -1,15 +1,23 @@
 /* This file is for your main application css. */
 
 /* Colors */
-.gh-gray {
+.gb-gray {
   color: #586069;
 }
-.gh-b--light-gray {
+.gb-b--light-gray {
   border-color: #d1d5da;
 }
 
-.gh-bg-teal {
+.gb-bg-teal {
   background-color: #4ABDAC;
+}
+
+.gb-light-teal {
+  color: #60c3b4;
+}
+
+.gb-dark-gray {
+  color: #45535b;
 }
 
 /* Comment box arrow */

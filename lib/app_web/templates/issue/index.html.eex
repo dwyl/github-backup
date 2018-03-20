@@ -18,7 +18,7 @@
     <section class="tc">
 
       <%= if comment.deleted == true do %>
-        <p class="gh-gray f3 center pv3 mb0">
+        <p class="gb-gray f3 center pv3 mb0">
           <i class="fas fa-trash pa3 mr2 bg-light-gray tc br-100"></i>
           <strong><%= comment.deleted_by %></strong>
           deleted this comment on <%= format_date comment.inserted_at %>
@@ -32,7 +32,7 @@
             <img class="br2"src="<%= version.user.avatar_url %>" alt="user avatar">
           </div>
           <div class="<%= style_comments(i) %>">
-            <p class="pa3 bb gh-b--light-gray bg-light-gray gh-gray mb0 cf">
+            <p class="pa3 bb gb-b--light-gray bg-light-gray gh-gray mb0 cf">
               <strong><%= version.user.login %></strong>
               commented <%= format_date version.inserted_at %>
             </p>
