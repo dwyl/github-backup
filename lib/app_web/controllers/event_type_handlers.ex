@@ -103,15 +103,7 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_created(conn, payload) do
-    token = @github_api.get_installation_token(payload["installation"]["id"])
-
-    issue = if payload["pull_request"] != nil do
-      repo_name = payload["repository"]["full_name"]
-      issue_number = payload["pull_request"]["number"]
-      @github_api.get_issue(token, repo_name, issue_number)
-    else
-      payload["issue"]
-    end
+    issue =  get_issue_from_pr(payload)
 
     payload = Map.put(payload, "issue", issue)
 
@@ -152,6 +144,7 @@ defmodule AppWeb.EventTypeHandlers do
 
     repo_name = payload["repository"]["full_name"]
     issue_number = payload["issue"]["number"]
+    token = @github_api.get_installation_token(payload["installation"]["id"])
     @github_api.add_meta_table(repo_name, issue_number, content, token)
 
     conn
@@ -160,16 +153,7 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_edited(conn, payload) do
-    token = @github_api.get_installation_token(payload["installation"]["id"])
-
-    issue = if payload["pull_request"] != nil do
-      repo_name = payload["repository"]["full_name"]
-      issue_number = payload["pull_request"]["number"]
-      @github_api.get_issue(token, repo_name, issue_number)
-    else
-      payload["issue"]
-    end
-
+    issue =  get_issue_from_pr(payload)
     payload = Map.put(payload, "issue", issue)
 
     issue_id = payload["issue"]["id"]
@@ -203,6 +187,9 @@ defmodule AppWeb.EventTypeHandlers do
     issue_status_params = %{
       event: "closed"
     }
+    issue =  get_issue_from_pr(payload)
+    payload = Map.put(payload, "issue", issue)
+
     issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
 
     %IssueStatus{}
@@ -219,6 +206,8 @@ defmodule AppWeb.EventTypeHandlers do
     issue_status_params = %{
       event: "reopened"
     }
+    issue_payload =  get_issue_from_pr(payload)
+    payload = Map.put(payload, "issue", issue_payload)
     issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
 
     %IssueStatus{}
@@ -308,6 +297,17 @@ defmodule AppWeb.EventTypeHandlers do
     conn
     |> put_status(200)
     |> json(%{ok: "comment deleted"})
+  end
+
+  defp get_issue_from_pr(payload) do
+    token = @github_api.get_installation_token(payload["installation"]["id"])
+    if Map.has_key?(payload, "pull_request") do
+      repo_name = payload["repository"]["full_name"]
+      issue_number = payload["pull_request"]["number"]
+      @github_api.get_issue(token, repo_name, issue_number)
+    else
+      payload["issue"]
+    end
   end
 
 end

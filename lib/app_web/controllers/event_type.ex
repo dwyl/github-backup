@@ -57,6 +57,8 @@ defmodule AppWeb.EventType do
     case action do
       "opened" -> EventTypeHandlers.issue_created(conn, payload)
       "edited" -> EventTypeHandlers.issue_edited(conn, payload)
+      "closed" -> EventTypeHandlers.issue_closed(conn, payload)
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 end
