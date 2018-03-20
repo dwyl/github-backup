@@ -63,7 +63,8 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> HTTPoison.get!(header(token), [])
 
     body =  Map.fetch!(data, :body)
-            |> PP.parse!
+    body = body
+      |> PP.parse!
     comments = comments ++ body
 
     if last_page?(Map.fetch!(data, :headers)) do

@@ -1,7 +1,7 @@
 defmodule AppWeb.Helpers.ViewTest do
   use AppWeb.ConnCase
 
-  @shared_classes "ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative"
+  @shared_classes "ml3 mv3 tl w-100 ba gb-b--light-gray br2 comment relative"
   @comment_text "- [ ] Unchecked - [ ]\r\n- [x] Checked"
   @html_comment "<p> <input type='checkbox' disabled> Unchecked - [ ]<br/> <input type='checkbox' checked='checked' disabled> Checked</p>\n"
 

@@ -22,7 +22,6 @@ defmodule AppWeb.IssueController do
       ])
 
     comments_details = issue_data.comments
-    issue_status = Enum.at(issue_data.issue_status, 0)
 
     issue_status_event = case Enum.at(issue_data.issue_status, 0) do
       nil ->
