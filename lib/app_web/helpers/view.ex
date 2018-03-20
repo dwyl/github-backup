@@ -4,7 +4,7 @@ defmodule AppWeb.Helpers.View do
   """
   use Phoenix.HTML
 
-  @shared_classes "ml3 mv3 tl w-100 ba gh-b--light-gray br2 comment relative"
+  @shared_classes "ml3 mv3 tl w-100 ba gb-b--light-gray br2 comment relative"
   @checked_box "<input type=\'checkbox\' checked=\'checked\' disabled>"
   @unchecked_box "<input type=\'checkbox\' disabled>"
   @regex_unchecked ~r/^[-,*,+] \[\s\]|\r\n[-,*,+] \[\s\]/
