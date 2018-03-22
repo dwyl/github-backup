@@ -4,17 +4,19 @@ defmodule AppWeb.AWS.S3 do
   """
   alias ExAws.S3
 
+  @s3_bucket System.get_env("S3_BUCKET_NAME")
+  @s3_region "eu-west-2"
 
-  def saveToS3(payload) do
-    # Take the payload and then strip the content out of it
-    IO.inspect payload["issue"]["body"]
+  def save_comment(issue_id, comment) do
+    @s3_bucket
+    |> S3.put_object("#{issue_id}.json", comment)
+    |> ExAws.request(region: @s3_region)
   end
 
-  def get_files_bucket() do
-    s3Bucket = System.get_env("S3_BUCKET_NAME")
-    # Code taken from the ExAws repo apart from the inspect to list objects in
-    # the bucket
-    S3.list_objects(s3Bucket) |> ExAws.request |> IO.inspect
+  def get_issue(issue_id) do
+    @s3_bucket
+    |> S3.get_object("#{issue_id}.json")
+    |> ExAws.request(region: @s3_region)
   end
 
 end

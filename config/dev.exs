@@ -58,5 +58,6 @@ config :app, App.Repo,
   pool_size: 10
 
 config :app, :github_api, AppWeb.GithubAPI.HTTPClient
-# Is this needed? Thought it might be as HTTPClient is?
-config :app, :aws, AppWeb.AWS.S3
+
+config :app, :s3_api, AppWeb.AWS.S3
+
