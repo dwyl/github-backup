@@ -1,4 +1,4 @@
-defmodule AppWeb.CommentView do
+defmodule AppWeb.IssueView do
   use AppWeb, :view
   import AppWeb.Helpers.View
 end

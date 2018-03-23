@@ -13,8 +13,14 @@ defmodule AppWeb.EventType do
          # type("installation_repositories", action, conn, payload)
       "issues" -> type("issues", action, conn, payload)
       "issue_comment" -> type("issue_comment", action, conn, payload)
-      _ -> nil
+      "pull_request"-> type("pull_request", action, conn, payload)
+      _ -> type("unknow", conn)
+
     end
+  end
+
+  defp type("unknow", conn) do
+    EventTypeHandlers.unknow_event(conn)
   end
 
   defp type("installation", action, conn, payload) do
@@ -34,10 +40,8 @@ defmodule AppWeb.EventType do
     case action do
       "opened" -> EventTypeHandlers.issue_created(conn, payload)
       "edited" -> EventTypeHandlers.issue_edited(conn, payload)
-      # See #70 - https://git.io/vAp3y
-      # "closed" -> :issue_closed
-      # See #71 - https://git.io/vAp3b
-      # "reopened" -> :issue_reopened
+      "closed" -> EventTypeHandlers.issue_closed(conn, payload)
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 
@@ -46,6 +50,15 @@ defmodule AppWeb.EventType do
       "created" -> EventTypeHandlers.comment_created(conn, payload)
       "edited" -> EventTypeHandlers.comment_edited(conn, payload)
       "deleted" -> EventTypeHandlers.comment_deleted(conn, payload)
+    end
+  end
+
+  defp type("pull_request", action, conn, payload) do
+    case action do
+      "opened" -> EventTypeHandlers.issue_created(conn, payload)
+      "edited" -> EventTypeHandlers.issue_edited(conn, payload)
+      "closed" -> EventTypeHandlers.issue_closed(conn, payload)
+      "reopened" -> EventTypeHandlers.issue_reopened(conn, payload)
     end
   end
 end

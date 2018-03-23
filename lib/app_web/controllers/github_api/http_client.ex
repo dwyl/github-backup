@@ -44,29 +44,43 @@ defmodule AppWeb.GithubAPI.HTTPClient do
     |> PP.parse!()
   end
 
-  def get_issues(token, payload, page, issues) do
-    data = "#{@github_root}/repos/#{payload["repository"]["full_name"]}/issues?state=all&per_page=100&page=#{page}"
+  def get_issues(token, repo, page, issues) do
+    data = "#{@github_root}/repos/#{repo}/issues?state=all&per_page=100&page=#{page}"
     |> HTTPoison.get!(header(token), [])
+
     body = PP.parse!(Map.fetch!(data, :body))
     issues = issues ++ body
 
     if last_page?(Map.fetch!(data, :headers)) do
       issues
     else
-      get_issues(token, payload, page + 1, issues)
+      get_issues(token, repo, page + 1, issues)
     end
   end
 
-  def get_comments(token, payload) do
-    "#{@github_root}/repos/#{payload["repository"]["full_name"]}/issues/comments"
+  def get_comments(token, repo, page, comments) do
+    data = "#{@github_root}/repos/#{repo}/issues/comments?per_page=100&page=#{page}"
     |> HTTPoison.get!(header(token), [])
-    |> Map.fetch!(:body)
-    |> PP.parse!
+
+    body =  Map.fetch!(data, :body)
+    body = body
+      |> PP.parse!
+    comments = comments ++ body
+
+    if last_page?(Map.fetch!(data, :headers)) do
+      comments
+    else
+      get_comments(token, repo, page + 1, comments)
+    end
+  end
+
+  def add_meta_table(repo_name, issue_id, content, token) do
+    "#{@github_root}/repos/#{repo_name}/issues/#{issue_id}"
+    |> HTTPoison.patch!(Poison.encode!(%{body: content}), header(token))
   end
 
   defp last_page?(headers) do
     links_header = Map.get(Enum.into(headers, %{}), "Link")
-
     if links_header do
       links_header
       |> String.split(",")
@@ -80,10 +94,16 @@ defmodule AppWeb.GithubAPI.HTTPClient do
       end)
       |> Enum.filter(&(not is_nil(&1)))
       |> Enum.empty?()
-      |> Kernel.!
     else
       true
     end
+  end
+
+  def get_issue(token, repo, issue_number) do
+    "#{@github_root}/repos/#{repo}/issues/#{issue_number}"
+    |> HTTPoison.get!(header(token), [])
+    |> Map.fetch!(:body)
+    |> PP.parse!
   end
 
 end

@@ -1,19 +1,101 @@
 defmodule AppWeb.EventTypeHandlers do
-  alias App.{Comment, Issue, Repo}
-  alias Ecto.Changeset
   use AppWeb, :controller
+  alias App.{Comment, Issue, IssueStatus, Repo, User}
+  alias App.Helpers.{IssueHelper, UserHelper}
+  alias Ecto.Changeset
+  alias AppWeb.MetaTable
 
   @github_api Application.get_env(:app, :github_api)
+  @github_app_name Application.get_env(:app, :github_app_name)
   @s3_api Application.get_env(:app, :s3_api)
 
   @moduledoc """
   Determines the type of event received by the Github Webhooks requests
   """
 
+  def unknow_event(conn) do
+    conn
+    |> put_status(404)
+    |> json(%{ok: "event unkown"})
+  end
+
   def new_installation(conn, payload) do
     token = @github_api.get_installation_token(payload["installation"]["id"])
-    issues = @github_api.get_issues(token, payload, 1, [])
-    comments = @github_api.get_comments(token, payload)
+    repositories = payload["repositories"]
+
+    repo_data = Enum.map(repositories, fn r ->
+      issues = @github_api.get_issues(token, r["full_name"], 1, [])
+      comments = @github_api.get_comments(token, r["full_name"], 1, [])
+      issues = IssueHelper.attach_comments(issues, comments)
+      %{
+        repository: r,
+        issues: issues,
+      }
+    end)
+
+    # create list of issue schema
+    issues = Enum.flat_map(repo_data, fn r ->
+      r.issues
+      |> Enum.map(fn i ->
+        author_params = %{
+          login: i["user"]["login"],
+          user_id: i["user"]["id"],
+          avatar_url: i["user"]["avatar_url"],
+          html_url: i["user"]["html_url"],
+        }
+        author_issue = UserHelper.insert_or_update_user(author_params)
+
+        %{
+          pull_request: Map.has_key?(i, "pull_request"),
+          issue_id: i["id"],
+          title: i["title"],
+          description: i["body"],
+          issue_author: author_issue,
+          inserted_at: NaiveDateTime.from_iso8601!(i["created_at"]),
+          updated_at: NaiveDateTime.from_iso8601!(i["created_at"]),
+          comments: Enum.map(i["comments"], fn c ->
+            author_params = %{
+              login: c["user"]["login"],
+              user_id: c["user"]["id"],
+              avatar_url: c["user"]["avatar_url"],
+              html_url: c["user"]["html_url"],
+            }
+            author_comment = UserHelper.insert_or_update_user(author_params)
+
+            %{
+              comment_id: "#{c["id"]}",
+              versions: [%{
+                author: author_comment.id,
+                inserted_at: NaiveDateTime.from_iso8601!(c["created_at"]),
+                updated_at: NaiveDateTime.from_iso8601!(c["created_at"])
+              }],
+              comment: c["body"],
+              inserted_at: NaiveDateTime.from_iso8601!(c["created_at"]),
+              updated_at: NaiveDateTime.from_iso8601!(c["created_at"])
+            }
+          end)
+        }
+      end)
+    end)
+
+    # Add description issue has comment too!
+    issues = IssueHelper.issues_as_comments(issues)
+
+    # filter issue to remove PRs
+    issues = IssueHelper.get_issues(issues)
+
+    # create map for comments: %{comment_id => comment_text, ...}
+    comments_body = IssueHelper.get_map_comments(issues)
+
+    # save issue
+    Enum.each(issues, fn i ->
+      changeset = Issue.changeset(%Issue{}, i)
+      issue = Repo.insert!(changeset)
+
+      s3_data = IssueHelper.get_s3_content(issue, comments_body)
+      content = Poison.encode!(s3_data)
+      @s3_api.save_comment(issue.issue_id, content)
+    end)
 
     conn
     |> put_status(200)
@@ -21,13 +103,26 @@ defmodule AppWeb.EventTypeHandlers do
   end
 
   def issue_created(conn, payload) do
+    issue =  get_issue_from_pr(payload)
+
+    payload = Map.put(payload, "issue", issue)
+
+    author_params = %{
+      login: payload["issue"]["user"]["login"],
+      user_id: payload["issue"]["user"]["id"],
+      avatar_url: payload["issue"]["user"]["avatar_url"],
+      html_url: payload["issue"]["user"]["html_url"]
+    }
+    author = UserHelper.insert_or_update_user(author_params)
+
     issue_params = %{
       issue_id: payload["issue"]["id"],
       title: payload["issue"]["title"],
+      pull_request: Map.has_key?(payload, "pull_request"),
       comments: [
         %{
           comment_id: "#{payload["issue"]["id"]}_1",
-          versions: [%{author: payload["issue"]["user"]["login"]}]
+          versions: [%{author: author.id}]
         }
       ]
     }
@@ -44,34 +139,90 @@ defmodule AppWeb.EventTypeHandlers do
     content = Poison.encode!(%{version_id => comment})
     @s3_api.save_comment(issue.issue_id, content)
 
+    meta_table = MetaTable.get_meta_table(payload["issue"]["id"])
+    content = comment <> "\r\n\n" <> meta_table
+
+    repo_name = payload["repository"]["full_name"]
+    issue_number = payload["issue"]["number"]
+    token = @github_api.get_installation_token(payload["installation"]["id"])
+    @github_api.add_meta_table(repo_name, issue_number, content, token)
+
     conn
     |> put_status(200)
     |> json(%{ok: "issue created"})
   end
 
   def issue_edited(conn, payload) do
-      issue_id = payload["issue"]["id"]
+    issue =  get_issue_from_pr(payload)
+    payload = Map.put(payload, "issue", issue)
 
-      if Map.has_key?(payload["changes"], "title") do
-          issue = Repo.get_by!(Issue, issue_id: issue_id)
-          issue = Changeset.change issue, title: payload["issue"]["title"]
-          Repo.update!(issue)
-      end
+    issue_id = payload["issue"]["id"]
 
-      if Map.has_key?(payload["changes"], "title") do
-        comment = payload["issue"]["body"]
-        author = payload["sender"]["login"]
-        add_comment_version(issue_id, "#{issue_id}_1", comment, author)
-      end
+    if Map.has_key?(payload["changes"], "title") do
+        issue = Repo.get_by!(Issue, issue_id: issue_id)
+        issue = Changeset.change issue, title: payload["issue"]["title"]
+        Repo.update!(issue)
+    end
 
-      conn
-      |> put_status(200)
-      |> json(%{ok: "issue edited"})
+    body_change = Map.has_key?(payload["changes"], "body")
+    not_bot = payload["sender"]["login"] != @github_app_name <> "[bot]"
+    if body_change && not_bot do
+      comment = payload["issue"]["body"]
+      author_params = %{
+        login: payload["sender"]["login"],
+        user_id: payload["sender"]["id"],
+        avatar_url: payload["sender"]["avatar_url"],
+        html_url: payload["sender"]["html_url"],
+      }
+      author = UserHelper.insert_or_update_user(author_params)
+      add_comment_version(issue_id, "#{issue_id}_1", comment, author)
+    end
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue edited"})
+  end
+
+  def issue_closed(conn, payload) do
+    issue_status_params = %{
+      event: "closed"
+    }
+    issue =  get_issue_from_pr(payload)
+    payload = Map.put(payload, "issue", issue)
+
+    issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
+
+    %IssueStatus{}
+    |> IssueStatus.changeset(issue_status_params)
+    |> Changeset.put_change(:issue_id, issue.id)
+    |> Repo.insert!
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue closed"})
+  end
+
+  def issue_reopened(conn, payload) do
+    issue_status_params = %{
+      event: "reopened"
+    }
+    issue_payload =  get_issue_from_pr(payload)
+    payload = Map.put(payload, "issue", issue_payload)
+    issue = Repo.get_by!(Issue, issue_id: payload["issue"]["id"])
+
+    %IssueStatus{}
+    |> IssueStatus.changeset(issue_status_params)
+    |> Changeset.put_change(:issue_id, issue.id)
+    |> Repo.insert!
+
+    conn
+    |> put_status(200)
+    |> json(%{ok: "issue reopened"})
   end
 
   def add_comment_version(issue_id, comment_id, content, author) do
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
-    version_params = %{author: author}
+    version_params = %{author: author.id}
     changeset = Ecto.build_assoc(comment, :versions, version_params)
     version = Repo.insert!(changeset)
     update_s3_file(issue_id, version.id, content)
@@ -87,9 +238,16 @@ defmodule AppWeb.EventTypeHandlers do
   def comment_created(conn, payload) do
     issue_id = payload["issue"]["id"]
     issue = Repo.get_by!(Issue, issue_id: issue_id)
+    author_params = %{
+      login: payload["comment"]["user"]["login"],
+      user_id: payload["comment"]["user"]["id"],
+      avatar_url: payload["comment"]["user"]["avatar_url"],
+      html_url: payload["comment"]["user"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     comment_params = %{
       comment_id: "#{payload["comment"]["id"]}",
-      versions: [%{author: payload["comment"]["user"]["login"]}]
+      versions: [%{author: author.id}]
     }
     changeset = Ecto.build_assoc(issue, :comments, comment_params)
     comment = Repo.insert!(changeset)
@@ -106,7 +264,13 @@ defmodule AppWeb.EventTypeHandlers do
     issue_id = payload["issue"]["id"]
     comment_id = payload["comment"]["id"]
     comment = payload["comment"]["body"]
-    author = payload["sender"]["login"]
+    author_params = %{
+      login: payload["sender"]["login"],
+      user_id: payload["sender"]["id"],
+      avatar_url: payload["sender"]["avatar_url"],
+      html_url: payload["sender"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     add_comment_version(issue_id, comment_id, comment, author)
 
     conn
@@ -116,16 +280,34 @@ defmodule AppWeb.EventTypeHandlers do
 
   def comment_deleted(conn, payload) do
     comment_id = payload["comment"]["id"]
-    author = payload["sender"]["login"]
+    author_params = %{
+      login: payload["sender"]["login"],
+      user_id: payload["sender"]["id"],
+      avatar_url: payload["sender"]["avatar_url"],
+      html_url: payload["sender"]["html_url"],
+    }
+    author = UserHelper.insert_or_update_user(author_params)
     comment = Repo.get_by!(Comment, comment_id: "#{comment_id}")
     changeset = Comment.changeset(comment)
     changeset = changeset
                 |> Changeset.put_change(:deleted, true)
-                |> Changeset.put_change(:deleted_by, author)
+                |> Changeset.put_change(:deleted_by, author.id)
     Repo.update!(changeset)
 
     conn
     |> put_status(200)
     |> json(%{ok: "comment deleted"})
   end
+
+  defp get_issue_from_pr(payload) do
+    token = @github_api.get_installation_token(payload["installation"]["id"])
+    if Map.has_key?(payload, "pull_request") do
+      repo_name = payload["repository"]["full_name"]
+      issue_number = payload["pull_request"]["number"]
+      @github_api.get_issue(token, repo_name, issue_number)
+    else
+      payload["issue"]
+    end
+  end
+
 end

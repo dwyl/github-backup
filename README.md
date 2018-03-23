@@ -233,7 +233,6 @@ Still on the same page, just scrolled down below the initial setup.
 
 
 
-
 #### Generate the `SECRET_KEY_BASE`
 
 Run the following command

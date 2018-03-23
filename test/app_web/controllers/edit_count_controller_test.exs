@@ -1,8 +1,8 @@
-defmodule AppWeb.CommentControllerTest do
+defmodule AppWeb.EditCountControllerTest do
   use AppWeb.ConnCase
   alias App.{Issue, User, Repo}
 
-  describe "loads comment page" do
+  describe "get svg count for an issue" do
     setup do
       user = %User{
                 login: "user_login",
@@ -14,11 +14,15 @@ defmodule AppWeb.CommentControllerTest do
               |> Repo.insert!
 
       issue_params = %{
-        issue_id: 1,
+        issue_id: 2,
         title: "Test issue title",
         comments: [
           %{
-            comment_id: "1_1",
+            comment_id: "2_1",
+            versions: [%{author: user.id}]
+          },
+          %{
+            comment_id: "1111",
             versions: [%{author: user.id}]
           }
         ]
@@ -29,10 +33,9 @@ defmodule AppWeb.CommentControllerTest do
       {:ok, conn: build_conn() |> assign(:issue, issue)}
     end
 
-    test "GET /comments/1_1", %{conn: conn} do
-      conn = get conn, "comments/1_1"
-
-      assert html_response(conn, 200) =~ "Test issue title"
+    test "GET /edit-count/2", %{conn: conn} do
+      conn = get conn, "edit-count/2"
+      assert response(conn, 200) =~ "Edit Count"
     end
   end
 end

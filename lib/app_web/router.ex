@@ -17,7 +17,14 @@ defmodule AppWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/issues/:id", IssueController, :show
     get "/comments/:id", CommentController, :show
+  end
+
+  scope "/", AppWeb do
+    pipe_through :api
+
+    get "/edit-count/:issue_id", EditCountController, :show
   end
 
   scope "/event", AppWeb do
@@ -26,16 +33,4 @@ defmodule AppWeb.Router do
     post "/new", EventController, :new
   end
 
-# Code is the wrong color and is erroring, not sure why. Tried putting this
-# inside the existing scope for '/' but it still didn't work
-# Code from JC tutorial
-  # scope “/”, AppWeb do
-  #  pipe_through :browser
-  #  resources “/upload”, UploadController, only: [:create, :new]
-  # end
-
-  # Other scopes may use custom stacks.
-  # scope "/api", AppWeb do
-  #   pipe_through :api
-  # end
 end
