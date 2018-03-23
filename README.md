@@ -147,6 +147,10 @@ send **notifications** when **events** occur in your repositories. <br />
 For example you can get be notified
 when **new issues** or **pull requests** are ***opened***.
 
+> _**Note**: we have **simplified**
+the steps in the "official" Github guide
+to create a new Github App_: https://developer.github.com/apps/building-github-apps/creating-a-github-app
+
 #### 1. Access the New Application Settings Page
 
 While logged into your GitHub Account, visit:
@@ -173,13 +177,13 @@ not needed for `github-backup`.
 6. **Webhook URL**: the URL where HTTP `POST` requests from Github are sent.
 The endpoint in the `github-backup` App is `/event/new`,
 however Github won't be able to send requests
-to ```http://localhost:4000/event/new```
+to `http://localhost:4000/event/new`
 as this url is only accessible on your `localhost`.
 To allow GitHub to access your `localhost` server you can use `ngrok`.
 **Remember to update these value after you have a running server on your machine!**
 7. **Webhook secret** (optional) - leave this blank for now.
-see: https://github.com/dwyl/github-backup/issues/76
-(_please let us know your thoughts!_)
+see: [github-backup/issues/76](https://github.com/dwyl/github-backup/issues/76)
+(_please let us know your thoughts on how/when we should prioritise this!_)
 
 Then in your terminal enter `ngrok http 4000`
 to generate an SSH "tunnel" between your localhost:4000 and ngrok.io.
@@ -194,33 +198,78 @@ https://developer.github.com/webhooks/configuring
 
 #### 2. Set the Necessary Permissions
 
-Still on the same page, just scrolled down below the initial setup.
+Still on the same page, scroll down below the initial setup,
+to the ***Permissions*** section:
 
-  - Define the access rights for the application on the permission section. **Change "issues" to "Read only"**
+![github-backup-permissions](https://user-images.githubusercontent.com/194400/37843463-e1498be2-2ebc-11e8-905e-4c12e359e080.png)
 
-  ![image](https://user-images.githubusercontent.com/16775804/36432698-b50c54f6-1652-11e8-8330-513c06150d05.png)
-
-
-  - Select which events ```dwylbot``` will be notified on. **Check "issues" and "issue comment"**
-
-    ![image](https://user-images.githubusercontent.com/16775804/36432733-d4901592-1652-11e8-841f-06e7b4bf9b4c.png)
-
-  - Webhook secret: This token can be used to make sure that the requests received by `github-backup` are from Github; `github-backup` doesn't use this token at the moment so you can keep this field empty (see https://developer.github.com/webhooks/securing/)
-
-  - You can decide to allow other users to install the Github Application or to limit the app on your account only:
-    ![Github app install scope](https://user-images.githubusercontent.com/6057298/34677046-cf874e96-f486-11e7-9f60-912f3ec2809b.png)
-
-    You can now click on "Create Github App"!
-
-  - Create a private key: This key is used to identify specific `github-backup` installations
-
-    ![Github App private key](https://user-images.githubusercontent.com/6057298/34678365-d9d73dd0-f48a-11e7-8d1b-cfbfa11bbcc9.png)
-
-    The downloaded file contains the private key.
-    Copy this key in your environment variables, see the next section.
+1. Define the access rights for the application on the permission section.
+**Change "issues" to "Read & write"**
+(_this is required to update "meta table" which links to the "issue history"_)
 
 
-  You can also read the Github guide on how to create a new Github App at https://developer.github.com/apps/building-github-apps/creating-a-github-app/
+#### 3. Subscribe to Events
+
+Scroll down to the "***Subscribe to events***" section
+and check the boxes for ***Issue comment*** and ***Issues***:
+![github-backup-subscribe-to-events](https://user-images.githubusercontent.com/194400/37843759-c0116002-2ebd-11e8-95a5-242c0238e115.png)
+
+
+#### 4. Where can this GitHub App be installed?
+
+Scroll down to the "***Where can this GitHub App be installed?***" section.
+
+![github-backup-where-can-be-installed](https://user-images.githubusercontent.com/194400/37844500-dee11980-2ebf-11e8-904b-94a34559c2e2.png)
+
+In _our_ case we want to be able to use GitHub Backup for a number of projects
+in different organisations, so we selected ***Any account***.
+but if you only want to backup your _personal_ projects,
+then select ***Only on this account***.
+
+#### 5. Click on the `Create GitHub App` Button!
+
+_Finally_, with everything configured, click on "Create Github App"!
+
+![create-github-app](https://user-images.githubusercontent.com/194400/37844737-a0466b84-2ec0-11e8-8ef3-dff6e2f6162a.png)
+
+You should see a message confirming that your app was created:
+![github-backup-create-private-key](https://user-images.githubusercontent.com/194400/37846890-fa8f9bbe-2ec6-11e8-9324-155f5f444f56.png)
+
+(_obviously your app will will have a different name in the url/path..._)
+
+Click on the _link_ to "***generate a private key***".
+
+![github-backup-private-key](https://user-images.githubusercontent.com/194400/37848805-53bb653c-2ecd-11e8-9a80-8d328ad9aadf.png)
+
+When you click the `Generate private key` button it should _download_
+a file containing your private key.
+
+![github-backup-pk-download](https://user-images.githubusercontent.com/194400/37848886-979979f6-2ecd-11e8-98a3-3b69dcf8dae6.png)
+
+Open the file in your text editor, e.g:
+![private-key](https://user-images.githubusercontent.com/194400/37849176-94cb965e-2ece-11e8-8771-02538aa662d9.png)
+
+> <small>_**Don't worry**, this is **not** our "**real**" private key ...
+it's just for demonstration purposes. <br />
+but this is what your RSA private key will
+look like, a block of random characters ..._</small>
+
+
+The downloaded file contains the private key.
+Copy this key in your `.env` file in the `PRIVATE_KEY`:
+e.g: <br />
+```text
+# PRIVATE_KEY should be generated in your GitHub App settings
+export PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA04up8hoqzS1+
+...
+l48DlnUtMdMrWvBlRFPzU+hU9wDhb3F0CATQdvYo2mhzyUs8B1ZSQz2Vy==
+-----END RSA PRIVATE KEY-----
+```
+
+
+source keytoenvar.sh PRIVATE_KEY ./gitbu.2018-03-23.private-key.pem
+
 
   #### Run a `github-backup` server
 
