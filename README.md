@@ -1,4 +1,4 @@
-# :octocat: :back: :up: GitHub Backup!
+# GitHub Backup!
 
 An App that helps you **backup** your **GitHub Issues**
 `so that` you can still **work** when (you/they are) ***offline***.
@@ -10,9 +10,7 @@ An App that helps you **backup** your **GitHub Issues**
 [![Inline docs](http://inch-ci.org/github/dwyl/github-backup.svg?style=flat-square)](http://inch-ci.org/github/dwyl/github-backup)
 [![codecov.io](https://img.shields.io/codecov/c/github/dwyl/github-backup/master.svg?style=flat-square)](http://codecov.io/github/dwyl/github-backup?branch=master)
 [![Deps Status](https://beta.hexfaktor.org/badge/all/github/dwyl/github-backup.svg?style=flat-square)](https://beta.hexfaktor.org/github/dwyl/github-backup)
-<!--
 [![HitCount](http://hits.dwyl.io/dwyl/github-backup.svg)](https://github.com/dwyl/github-backup)
--->
 </div>
 
 
@@ -28,9 +26,10 @@ I `need` a backup of GitHub issues <br />
 
 GitHub (Issue) Backup is an App that lets you (_unsurprisingly_):
 
-1. **Store a backup **of the content of the **GitHub issue(s)**
+1. **Store a backup** of the content of the **GitHub issue(s)**
 for a given project/repo.
 2. Track the changes/edits made to issue description and comments.
+see: [dear-github/issues/129](https://github.com/dear-github/dear-github/issues/129)
 3. View all your issues when you or GitHub are
 ["offline"](https://github.com/dwyl/github-reference/issues/15)
 
@@ -45,7 +44,7 @@ if you want to _understand_ how it works, <br />
 we _recommend_ taking the time to **learn** each item on the list.
 <br />
 If you are `new` to Phoenix, Elixir,
-or to Tachyons (_the UI_)
+Tachyons (_the UI_) or ngrok, <br />
 we have a "_beginner tutorials_"
 which will bring you up-to-speed:
 
@@ -55,10 +54,12 @@ which will bring you up-to-speed:
 [github.com/dwyl/**learn-phoenix-framework**](https://github.com/dwyl/learn-phoenix-framework)
 + Tachyons:
 [github.com/dwyl/**learn-tachyons**](https://github.com/dwyl/learn-tachyons)
++ ngrok: [github.com/dwyl/**learn-ngrok**](https://github.com/dwyl/learn-ngrok)
 
 _Additionally_ we use Amazon Web Services (***AWS***)
 Simple Storage Service (***S3***) <br />
-for storing the issue comment _history_ with "_high availability_". <br />
+for storing the issue comment _history_
+with "_high availability_" and reliability. <br />
 To run `github-backup` on your `localhost`
 you will need to have an AWS account and an S3 "bucket". <br />
 (_instructions given below_).
@@ -71,7 +72,7 @@ https://github.com/dwyl/github-backup/issues/55
 
 ## Set Up _Checklist_ on `localhost`
 
-This will take approximately **10 minutes** to complete.
+This will take approximately **15 minutes** to complete.
 (_provided you already have a GitHub and AWS account_)
 
 ### Install Dependencies
