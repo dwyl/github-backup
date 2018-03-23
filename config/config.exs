@@ -11,7 +11,7 @@ config :app,
 
 # Configures the endpoint
 config :app, AppWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: Map.fetch!(System.get_env(), "APP_HOST")],
   secret_key_base: Map.fetch!(System.get_env(), "SECRET_KEY_BASE"),
   render_errors: [view: AppWeb.ErrorView, accepts: ~w(html json)],
   pubsub: [name: App.PubSub,
@@ -21,6 +21,7 @@ config :app, AppWeb.Endpoint,
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
+
 
 # config :ex_aws,
 #   access_key_id: [{:system, System.get_env("AWS_ACCESS_KEY_ID")}, :instance_role],
@@ -37,6 +38,9 @@ config :ex_aws,
    host: "dwyl-github-backup.s3.amazonaws.com",
    region: "eu-west-2"
   ]
+
+config :app, :github_app_name, Map.fetch!(System.get_env(), "GITHUB_APP_NAME")
+
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
