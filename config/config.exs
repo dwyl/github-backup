@@ -22,25 +22,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-
-# config :ex_aws,
-#   access_key_id: [{:system, System.get_env("AWS_ACCESS_KEY_ID")}, :instance_role],
-#   secret_access_key: [{:system, System.get_env("AWS_SECRET_ACCESS_KEY")}, :instance_role],
-#   region: "eu-west-2"
-
-# Configure :ex_aws - Taken from JC tutorial
-# Or take the version from ex-aws? with instance_role
-config :ex_aws,
-  access_key_id: System.get_env("AWS_ACCESS_KEY_ID"),
-  secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY"),
-  s3: [
-   scheme: "https://",
-   host: "dwyl-github-backup.s3.amazonaws.com",
-   region: "eu-west-2"
-  ]
-
 config :app, :github_app_name, Map.fetch!(System.get_env(), "GITHUB_APP_NAME")
-
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

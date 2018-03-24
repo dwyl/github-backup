@@ -111,7 +111,7 @@ you will need to have the following Environment Variables defined.
 [github.com/dwyl/**learn-environment-variables**](https://github.com/dwyl/learn-environment-variables)
 
 + `APP_HOST` - the hostname for your app e.g: `localhost` or `gitbu.io`.
-+ `PRIVATE_KEY` - The key for your GitHub App.
++ `PRIVATE_KEY` - The RSA private key for your GitHub App.
 _See below for how to set this up_.
 + `GITHUB_APP_ID` - The unique `id` of your GitHub App. _See below_.
 + `GITHUB_APP_NAME` - the name of your GitHub App. _See below_ (_Step 1_).
@@ -267,8 +267,13 @@ l48DlnUtMdMrWvBlRFPzU+hU9wDhb3F0CATQdvYo2mhzyUs8B1ZSQz2Vy==
 -----END RSA PRIVATE KEY-----
 ```
 
-
 source keytoenvar.sh PRIVATE_KEY ./gitbu.2018-03-23.private-key.pem
+
+
+In the "About" section you will find the `ID` of your app e.g: 103
+this is the number that needs to be set for `GITHUB_APP_ID` in your `.env` file.
+
+![app-about-id](https://user-images.githubusercontent.com/194400/37863366-004a4f02-2f55-11e8-97eb-7d9f8b74ba66.png)
 
 
   #### Run a `github-backup` server
