@@ -58,6 +58,4 @@ config :app, App.Repo,
   pool_size: 10
 
 config :app, :github_api, AppWeb.GithubAPI.HTTPClient
-
 config :app, :s3_api, AppWeb.AWS.S3
-
