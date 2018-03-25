@@ -72,19 +72,19 @@ https://github.com/dwyl/github-backup/issues/55
 
 ## Set Up _Checklist_ on `localhost`
 
-This will take approximately **15 minutes** to complete.
+This will take approximately **15 minutes** to complete. <br />
 (_provided you already have a GitHub and AWS account_)
 
-### Install Dependencies
+### Install Dependencies
 
 To run the App on your `localhost`,
 you will need to have **4 dependencies** _installed_:
 
-+ Elixir:
++ **Elixir**:
 https://github.com/dwyl/learn-elixir#installation
-+ PostgreSQL:
++ **PostgreSQL**:
 https://github.com/dwyl/learn-postgresql#installation
-+ Phoenix:
++ **Phoenix**:
 https://hexdocs.pm/phoenix/installation.html
 + **ngrok**: https://github.com/dwyl/learn-ngrok#1-download--install <br />
 (_so you can share the app on your `localhost` with GitHub via `public` URL_)
@@ -94,7 +94,7 @@ we can move on.
 (_if you get stuck,
   [please let us know](https://github.com/dwyl/github-backup/issues)_!)
 
-### Clone the App
+### Clone the App from GitHub
 
 Run the following the command to `clone` the app from GitHub:
 ```sh
@@ -117,6 +117,10 @@ _See below for how to set this up_.
 + `GITHUB_APP_NAME` - the name of your GitHub App. _See below_ (_Step 1_).
 + `SECRET_KEY_BASE` - a 64bit string used by Phoenix for security
 (_to sign cookies and CSRF tokens_). See below for how to _generate_ yours.
++ `AWS_ACCESS_KEY_ID` - your AWS access key (_get this from your AWS settings_)
++ `AWS_SECRET_ACCESS_KEY` - your AWS secrete access key
++ `S3_BUCKET_NAME` - name of the AWS S3 "bucket" where issue comments
+will be stored.
 
 
 #### Copy The `.env_sample` File
@@ -217,7 +221,7 @@ and check the boxes for ***Issue comment*** and ***Issues***:
 
 #### 4. Where can this GitHub App be installed?
 
-Scroll down to the "***Where can this GitHub App be installed?***" section.
+Scroll down to the "**_Where_ can this GitHub App be installed?**" section.
 
 ![github-backup-where-can-be-installed](https://user-images.githubusercontent.com/194400/37844500-dee11980-2ebf-11e8-904b-94a34559c2e2.png)
 
@@ -237,6 +241,8 @@ You should see a message confirming that your app was created:
 
 (_obviously your app will will have a different name in the url/path..._)
 
+#### 6. Generate Private Key
+
 Click on the _link_ to "***generate a private key***".
 
 ![github-backup-private-key](https://user-images.githubusercontent.com/194400/37848805-53bb653c-2ecd-11e8-9a80-8d328ad9aadf.png)
@@ -252,56 +258,67 @@ Open the file in your text editor, e.g:
 > <small>_**Don't worry**, this is **not** our "**real**" private key ...
 it's just for demonstration purposes. <br />
 but this is what your RSA private key will
-look like, a block of random characters ..._</small>
+**look** like, a block of random characters ..._</small>
 
 
 The downloaded file contains the private key.
-Copy this key in your `.env` file in the `PRIVATE_KEY`:
-e.g: <br />
-```text
-# PRIVATE_KEY should be generated in your GitHub App settings
-export PRIVATE_KEY=-----BEGIN RSA PRIVATE KEY-----
-MIIEpAIBAAKCAQEA04up8hoqzS1+
-...
-l48DlnUtMdMrWvBlRFPzU+hU9wDhb3F0CATQdvYo2mhzyUs8B1ZSQz2Vy==
------END RSA PRIVATE KEY-----
+Save this file in the root
+of the `github-backup` repo on your `localhost`.
+
+For _example_ in _our_ case the GitHub app is called "**gitbu**", <br />
+so our Private Key file starts with the app name
+and the date the key was generated:
+`gitbu.2018-03-23.private-key.pem`
+
+
+> <small>_**Don't worry**, all `.pem` (private key) files
+are ignored in the `.gitignore` file so your file will stay private._</small>
+
+Once you have copied the file into your project root, run the following command:
+```sh
+source keytoenvar.sh PRIVATE_KEY ./gitbu.2018-03-23.private-key.pem
 ```
 
-source keytoenvar.sh PRIVATE_KEY ./gitbu.2018-03-23.private-key.pem
+#### 7. Copy the App Name and App `ID` from GitHub App Settings Page
 
+In the "**Basic information**" section of your app's settings page,
+copy the GitHub App name and paste it into your `.env` file after the `=` sign
+for the `GITHUB_APP_NAME` variable.
 
-In the "About" section you will find the `ID` of your app e.g: 103
+![github-backup-app-name](https://user-images.githubusercontent.com/194400/37878406-dbaaa2ca-3060-11e8-8c50-14860144ea79.png)
+
+Scroll downd to the "About" section you will find the `ID` of your app e.g: 103
 this is the number that needs to be set for `GITHUB_APP_ID` in your `.env` file.
 
 ![app-about-id](https://user-images.githubusercontent.com/194400/37863366-004a4f02-2f55-11e8-97eb-7d9f8b74ba66.png)
 
-
-  #### Run a `github-backup` server
-
-  The `github-backup` server will receive events from Github
-  and then save the details or edits to an external database.
-
-
-### S3 Bucket
 
 
 
 
 #### Generate the `SECRET_KEY_BASE`
 
-Run the following command
-to generate a new `SECRET_KEY_BASE`:
+Run the following command to generate a new phoenix secret key:
 
 ```sh
 mix phx.gen.secret
 ```
 _copy-paste_ the _output_ (64bit `String`)
-into your `.env` file after the "equals sign" on the line that reads:
+into your `.env` file after the "equals sign" on the line for `SECRET_KEY_BASE`:
 ```yml
-export SECRET_KEY_BASE=run:mix_phx.gen.secret...
+export SECRET_KEY_BASE=YourSecreteKeyBaseGeneratedUsing-mix_phx.gen.secret
 ```
 
+####  S3 Bucket
 
+In order to save the Issue Comments (_which are a variable length "rich text"_),
+we save these as `.json` in an S3 bucket. If you do not _already_ have
+an S3 bucket where you can store issues/comments, create one now.
+
+Once you have an S3 bucket, copy the name and paste it into your `.env` file
+against the `S3_BUCKET_NAME` environment variable.
+
+You will _also_ need to define the
 
 #### "Source" the `.env` File
 
@@ -326,7 +343,7 @@ Now that you have the environment variables defined,
 you can install the _elixir_ (_application-specific_) dependencies:
 
 ```sh
-mix deps.get && npm install
+mix deps.get && cd assets npm install && cd ..
 ```
 
 #### Run the Tests! (_To check it works!_)
@@ -337,7 +354,6 @@ Confirm everything is working by running the tests:
 mix test
 ```
 
-
 ### Create the Database
 
 In your terminal, run the following command:
@@ -345,28 +361,75 @@ In your terminal, run the following command:
 mix ecto.create && mix ecto.migrate
 ```
 
-> _**Note**: your PostgreSQL server will need to be running for this to work_.
+> _**Note**: your **PostgreSQL** server
+will need to be **running** for this to work_.
 
 
-### Run the Phoenix (Application) Server
+### Run a `github-backup` (Phoenix Application) Server
+
+The `github-backup` server will receive events from Github
+and then save the details or edits to an external database.
 
 ```
 mix phx.server
 ```
 
-- Now that your server is running you can update the
-`webhook url` in your app config:
 
-- run ```ngrok http 4000``` in a `new` terminal window.
+### Run `ngrok` on your `localhost`
 
-    ![ngrok](https://user-images.githubusercontent.com/6057298/34685179-73b6d71c-f49f-11e7-8dab-abfc64c9e938.png)
+In a New Window/Tab in your Terminal run the `ngrok` server:
+```sh
+ngrok http 4000
+```
+
+You should see something like this:
+![ngrok-terminal-running-proxy](https://user-images.githubusercontent.com/194400/37878883-a3ae8646-3067-11e8-8e1f-02683a2fd0bb.png)
+
+On the line that says "**forwarding**" you will see the (`public`) URL
+of your app, in this case https://38e239f0.ngrok.io
+(_your URL's subdomain will be a different "random" set of characters_)
+
+Copy the URL for the next step. (_remember to copy the `https` version_)
+
+### Update your Webhook URL on your GitHub App
+
+Now that your server is running you can update the
+`webhook url` in your app config.
+On the "GitHub App settings page"
+Find the "Webhook URL" section:
+(_the URL is currently `http://localhost:4000` ..._)
+
+![github-backup-webhook-url-before](https://user-images.githubusercontent.com/194400/37879083-7e929d22-306a-11e8-8a86-48afa14158e0.png)
+
+
+_Replace+ the `http://localhost:4000` with your _unique_ `ngrok` url e.g:
+
+![github-backup-webhook-url-after](https://user-images.githubusercontent.com/194400/37879098-bf13a33c-306a-11e8-8a29-4d662678931a.png)
+
+
+Scroll down and click on the "Save changes" button:
+
+![save-changes](https://user-images.githubusercontent.com/194400/37879104-d327af6c-306a-11e8-82d7-48baada8410d.png)
+
   - copy and save the url into your Github App config with ```/event/new``` for endpoint
 
-- View the Project in your Web Browser
+### View the App in your Web Browser
 
-Open http://localhost:4000 in your web browser.
+Open http://localhost:4000 in your web browser. You should see something like:
 
-To test your github-backup server try installing your app onto one of your repos. You should see the payload of the request in the tab you have open in your terminal for the phoenix server:
+![gitbu-homepage-localhost](https://user-images.githubusercontent.com/194400/37879114-1f9ca438-306b-11e8-85a9-dec480ef7577.png)
+
+### Try The App!
+
+
+To test your github-backup server try installing your app
+onto one of your repos.
+
+Visit your App's URL on GitHub e.g: https://github.com/apps/gitbu
+
+
+You should see the payload of the request in the tab you
+have open in your terminal for the phoenix server:
 
 ![image](https://user-images.githubusercontent.com/16775804/36433464-77912686-1654-11e8-8a54-0779992d9e18.png)
 
