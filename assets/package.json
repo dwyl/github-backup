@@ -1,6 +1,11 @@
 {
-  "repository": {},
-  "license": "MIT",
+  "name":"gitbu",
+  "description": "The easy way to backup GitHub issues with comment history",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dwyl/github-backup.git"
+  },
+  "license": "GPL-2.0",
   "scripts": {
     "deploy": "brunch build --production",
     "coverage": "mix coveralls",
@@ -15,5 +20,9 @@
     "brunch": "2.10.9",
     "clean-css-brunch": "2.10.0",
     "uglify-js-brunch": "2.10.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/dwyl/github-backup/issues"
+  },
+  "homepage": "https://github.com/dwyl/github-backup",
 }
