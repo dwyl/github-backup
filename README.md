@@ -260,15 +260,14 @@ it's just for demonstration purposes. <br />
 but this is what your RSA private key will
 **look** like, a block of random characters ..._</small>
 
-
 The downloaded file contains the private key.
 Save this file in the root
 of the `github-backup` repo on your `localhost`.
 
 For _example_ in _our_ case the GitHub app is called "**gitbu**", <br />
 so our Private Key file starts with the app name
-and the date the key was generated:
-`gitbu.2018-03-23.private-key.pem`
+and the _date_ the key was generated. <br />
+e.g: `gitbu.2018-03-23.private-key.pem`
 
 
 > <small>_**Don't worry**, all `.pem` (private key) files
@@ -276,8 +275,15 @@ are ignored in the `.gitignore` file so your file will stay private._</small>
 
 Once you have copied the file into your project root, run the following command:
 ```sh
-source keytoenvar.sh PRIVATE_KEY ./gitbu.2018-03-23.private-key.pem
+echo "export PRIVATE_KEY='`cat ./gitbu.2018-03-23.private-key.pem`'" >> .env
 ```
+Replace the `gitbu.2018-03-23.private-key.pem` part in the command
+with the name of _your_ private key file
+e.g: `my-github-backup-app.2018-04-01.private-key.pem`
+
+That will create an entry in the `.env` file for your `PRIVATE_KEY`
+environment variable.
+
 
 #### 7. Copy the App Name and App `ID` from GitHub App Settings Page
 
@@ -425,8 +431,12 @@ Open http://localhost:4000 in your web browser. You should see something like:
 To test your github-backup server try installing your app
 onto one of your repos.
 
+#### 1. Visit Your App's GitHub Page
+
 Visit your App's URL on GitHub e.g: https://github.com/apps/gitbu
 
+
+Install the app on one of your Repositories e.g:
 
 You should see the payload of the request in the tab you
 have open in your terminal for the phoenix server:
