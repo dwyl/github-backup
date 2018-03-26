@@ -467,14 +467,38 @@ I closed it with a comment:
 
 ![gitbu-issue-closed](https://user-images.githubusercontent.com/194400/37900974-ba20ae88-30e7-11e8-82d1-be88e82cc9d3.png)
 
+#### 4. Observe the Data in Phoenix App Terminal Window
+
 When you perform any Issue action (create, comment, update or close),
 you will see a corresponding event in the terminal.
 
 You should see the payload of the request in the tab you
 have open in your terminal for the phoenix server, e.g:
 
-![image](https://user-images.githubusercontent.com/16775804/36433464-77912686-1654-11e8-8a54-0779992d9e18.png)
+![gitbu-phoenix-event-terminal-log](https://user-images.githubusercontent.com/194400/37902754-597a2b44-30ed-11e8-905c-48591c2c250b.png)
 
+
+#### 5. Confirm the Data in PostgreSQL Database
+
+You can _confirm_ that the data was saved to PostgreSQL
+by checking your DB. <br />
+Open `pgAdmin` and _navigate_ to the database table
+in `app_dev > tables > issues`
+
+![gitbu-confirm-data-in-postgresql-db](https://user-images.githubusercontent.com/194400/37903055-7a4d04f8-30ee-11e8-8fcd-60304b8d6759.png)
+
+To _run_ the query, ***right-click*** (**⌘ + click**) on the table
+(_in this case `issues`_) and then click "**View/Edit Data**"
+followed by "**All Rows**":
+
+![gitbu-all-rows](https://user-images.githubusercontent.com/194400/37903327-5ed061e2-30ef-11e8-8007-20fabba12f65.png)
+
+You can _also_ confirm that the _status_ of the issue
+has been update to "closed":
+
+![gitbu-issue_status-closed](https://user-images.githubusercontent.com/194400/37903517-2283910e-30f0-11e8-925d-5dfefff97e42.png)
+
+That's it, your `github-backup` instance is working!
 
 ### Deployment
 
