@@ -435,11 +435,43 @@ onto one of your repos.
 
 Visit your App's URL on GitHub e.g: https://github.com/apps/gitbu
 
+![gitbu-homepage-install](https://user-images.githubusercontent.com/194400/37900407-0fa73e64-30e6-11e8-8e40-a4061e315f23.png)
 
-Install the app on one of your Repositories e.g:
+Click on the `Install` button
+to install the App
+for your organisation / repository.
+
+#### 2. Install the App
+
+Select the Organisation you wish to install the app for:
+![gitbu-install-select-org](https://user-images.githubusercontent.com/194400/37900543-68f3f0c0-30e6-11e8-9b58-f748acebb6ff.png)
+
+Select the repository you want to install the App for e.g:
+
+![gitbu-select-respository](https://user-images.githubusercontent.com/194400/37900609-a3b6b742-30e6-11e8-80ed-db34555248a6.png)
+then click `Install`.
+
+You should now see a settings page confirming that the app is installed:
+
+![gitbu-confirmed-installed](https://user-images.githubusercontent.com/194400/37900752-096ce69c-30e7-11e8-84f2-7efa5d645fff.png)
+
+#### 3. Create/Update or Close an Issue in the Repo
+
+In the repo you added the App to, create/update or close an issue.
+e.g:
+
+![gitbu-hits-elixir-issue](https://user-images.githubusercontent.com/194400/37900908-8126d206-30e7-11e8-8dda-fe293409f752.png)
+
+Since this issue has/had already been resolved by a Pull Request from Sam,
+I closed it with a comment:
+
+![gitbu-issue-closed](https://user-images.githubusercontent.com/194400/37900974-ba20ae88-30e7-11e8-82d1-be88e82cc9d3.png)
+
+When you perform any Issue action (create, comment, update or close),
+you will see a corresponding event in the terminal.
 
 You should see the payload of the request in the tab you
-have open in your terminal for the phoenix server:
+have open in your terminal for the phoenix server, e.g:
 
 ![image](https://user-images.githubusercontent.com/16775804/36433464-77912686-1654-11e8-8a54-0779992d9e18.png)
 
