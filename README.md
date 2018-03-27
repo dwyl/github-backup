@@ -148,7 +148,7 @@ as the `.env` file is "ignored" in the_
 
 The role of the Github application is to
 send **notifications** when **events** occur in your repositories. <br />
-For example you can get be notified
+For example you can be notified
 when **new issues** or **pull requests** are ***opened***.
 
 > _**Note**: we have **simplified**
@@ -329,7 +329,7 @@ You will _also_ need to define the
 #### "Source" the `.env` File
 
 Now that you have defined all the necessary
-environment variables in your `.env` file, <br /
+environment variables in your `.env` file, <br />
 it's time to make them _available_ to the App. <br />
 
 Execute the command following command in your terminal:
