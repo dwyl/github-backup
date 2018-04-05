@@ -349,7 +349,7 @@ Now that you have the environment variables defined,
 you can install the _elixir_ (_application-specific_) dependencies:
 
 ```sh
-mix deps.get && cd assets npm install && cd ..
+mix deps.get && cd assets && npm install && cd ..
 ```
 
 #### Run the Tests! (_To check it works!_)
