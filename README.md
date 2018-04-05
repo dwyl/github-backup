@@ -205,18 +205,22 @@ https://developer.github.com/webhooks/configuring
 Still on the same page, scroll down below the initial setup,
 to the ***Permissions*** section:
 
-![github-backup-permissions](https://user-images.githubusercontent.com/194400/37843463-e1498be2-2ebc-11e8-905e-4c12e359e080.png)
+![github-backup-permissions](https://user-images.githubusercontent.com/15571853/38360984-cc9fca06-38c3-11e8-9611-20e4c54ae1ff.png)
 
-1. Define the access rights for the application on the permission section.
-**Change "issues" to "Read & write"**
+Define the access rights for the application on the permission section.
+
+1. **Change "issues" to "Read & write"**
 (_this is required to update "meta table" which links to the "issue history"_)
+
+2. **Change "Pull requests" to "Read-only"**
+(_this is required to allow the app to see the current state of pull requests_)
 
 
 #### 3. Subscribe to Events
 
 Scroll down to the "***Subscribe to events***" section
 and check the boxes for ***Issue comment*** and ***Issues***:
-![github-backup-subscribe-to-events](https://user-images.githubusercontent.com/194400/37843759-c0116002-2ebd-11e8-95a5-242c0238e115.png)
+![github-backup-subscribe-to-events](https://user-images.githubusercontent.com/15571853/38360995-da04b8f0-38c3-11e8-8b80-eb4ecb191879.png)
 
 
 #### 4. Where can this GitHub App be installed?
@@ -349,7 +353,7 @@ Now that you have the environment variables defined,
 you can install the _elixir_ (_application-specific_) dependencies:
 
 ```sh
-mix deps.get && cd assets npm install && cd ..
+mix deps.get && cd assets && npm install && cd ..
 ```
 
 #### Run the Tests! (_To check it works!_)
