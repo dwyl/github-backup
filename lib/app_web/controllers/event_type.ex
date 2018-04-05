@@ -8,14 +8,11 @@ defmodule AppWeb.EventType do
   def get_event_type(x_github_event, action, conn, payload) do
     case x_github_event do
       "installation" -> type("installation", action, conn, payload)
-      # See #72 - https://git.io/vApsZ
-      # "installation_repositories" ->
-         # type("installation_repositories", action, conn, payload)
+      "installation_repositories" -> type("installation_repositories", action, conn, payload)
       "issues" -> type("issues", action, conn, payload)
       "issue_comment" -> type("issue_comment", action, conn, payload)
       "pull_request"-> type("pull_request", action, conn, payload)
       _ -> type("unknow", conn)
-
     end
   end
 
@@ -29,12 +26,11 @@ defmodule AppWeb.EventType do
     end
   end
 
-  # See #72 - https://git.io/vApsZ
-  # defp type("installation_repositories", action) do
-  #   case action do
-  #     "added" -> :new_installation_repositories
-  #   end
-  # end
+  defp type("installation_repositories", action, conn, payload) do
+    case action do
+      "added" -> EventTypeHandlers.new_installation(conn, payload)
+    end
+  end
 
   defp type("issues", action, conn, payload) do
     case action do
