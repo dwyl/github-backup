@@ -19,6 +19,14 @@ defmodule AppWeb.Router do
     get "/", PageController, :index
     get "/issues/:id", IssueController, :show
     get "/comments/:id", CommentController, :show
+    get "/auth", AuthController, :index
+  end
+
+  scope "/auth", AppWeb do
+    pipe_through :browser # Use the default browser stack
+
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
   end
 
   scope "/", AppWeb do

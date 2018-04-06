@@ -22,7 +22,7 @@ defmodule App.Mixfile do
   def application do
     [
       mod: {App.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ueberauth, :ueberauth_github]
     ]
   end
 
@@ -54,7 +54,9 @@ defmodule App.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:earmark, "~> 1.2.4"},
       {:timex, "~> 3.1"},
-      {:html_sanitize_ex, "~> 1.3"}
+      {:html_sanitize_ex, "~> 1.3"},
+      {:ueberauth, "~> 0.4"},
+      {:ueberauth_github, "~> 0.4"}
     ]
   end
 
