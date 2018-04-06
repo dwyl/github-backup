@@ -5,7 +5,6 @@ defmodule AppWeb.EventTestController do
 
   @fixtures [
     %{payload: "installation", event: "installation", json_reply: "new installation", status: 200},
-    # %{payload: "installation_repositories", event: "installation_repositories", json_reply: "new installation", status: 200},
     %{payload: "issue_opened", event: "issues", json_reply: "issue created", status: 200},
     %{payload: "issue_closed", event: "issues", json_reply: "issue closed", status: 200},
     %{payload: "issue_reopened", event: "issues", json_reply: "issue reopened", status: 200},
@@ -31,5 +30,15 @@ defmodule AppWeb.EventTestController do
         |> post("/event/new", payload)
       assert json_response(conn, fixture.status)
     end
+  end
+
+  test "POST /event/new for installation_repositories", %{conn: conn} do
+    fixture = %{payload: "./test/fixtures/installation_repositories.json", event: "installation_repositories", json_reply: "new installation", status: 200}
+    payload = fixture.payload |> File.read! |> PP.parse!
+    conn =
+      conn
+      |> Conn.put_req_header("x-github-event", "#{fixture.event}")
+      |> post("/event/new", payload)
+    assert json_response(conn, fixture.status)
   end
 end
