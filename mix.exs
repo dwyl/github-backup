@@ -22,7 +22,7 @@ defmodule App.Mixfile do
   def application do
     [
       mod: {App.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ueberauth, :ueberauth_github]
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -56,7 +56,7 @@ defmodule App.Mixfile do
       {:timex, "~> 3.1"},
       {:html_sanitize_ex, "~> 1.3"},
       {:ueberauth, "~> 0.4"},
-      {:ueberauth_github, "~> 0.4"}
+      {:ueberauth_github, "~> 0.7"}
     ]
   end
 

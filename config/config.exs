@@ -26,7 +26,7 @@ config :app, :github_app_name, Map.fetch!(System.get_env(), "GITHUB_APP_NAME")
 
 config :ueberauth, Ueberauth,
   providers: [
-    github: {Ueberauth.Strategy.Github, []}
+    github: {Ueberauth.Strategy.Github, [default_scope: "user,public_repo"]}
   ]
 
 config :ueberauth, Ueberauth.Strategy.Github.OAuth,
