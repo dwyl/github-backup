@@ -1,4 +1,5 @@
 defmodule AppWeb.GithubAPI.InMemory do
+  alias App.{Repo, Issue}
   @moduledoc """
   mock of github api functions for tests
   """
@@ -95,7 +96,12 @@ defmodule AppWeb.GithubAPI.InMemory do
   end
 
   def get_issues(_token, _payload, _page, _issues) do
-    [@issue]
+    case Repo.get_by(Issue, issue_id: 236506221) do
+      nil ->
+        [@issue]
+      _ ->
+        []
+    end
   end
 
   def get_comments(_token, _repo, _page, _comments) do

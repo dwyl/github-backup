@@ -21,7 +21,7 @@ defmodule AppWeb.EventTypeHandlers do
 
   def new_installation(conn, payload) do
     token = @github_api.get_installation_token(payload["installation"]["id"])
-    repositories = payload["repositories"]
+    repositories = payload["repositories"] || payload["repositories_added"]
 
     repo_data = Enum.map(repositories, fn r ->
       issues = @github_api.get_issues(token, r["full_name"], 1, [])

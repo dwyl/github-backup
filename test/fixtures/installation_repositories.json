@@ -1,0 +1,75 @@
+{
+  "action": "added",
+  "installation": {
+    "id": 122511,
+    "account": {
+      "login": "RobStallion",
+      "id": 15571853,
+      "avatar_url": "https://avatars2.githubusercontent.com/u/15571853?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/RobStallion",
+      "html_url": "https://github.com/RobStallion",
+      "followers_url": "https://api.github.com/users/RobStallion/followers",
+      "following_url": "https://api.github.com/users/RobStallion/following{/other_user}",
+      "gists_url": "https://api.github.com/users/RobStallion/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/RobStallion/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/RobStallion/subscriptions",
+      "organizations_url": "https://api.github.com/users/RobStallion/orgs",
+      "repos_url": "https://api.github.com/users/RobStallion/repos",
+      "events_url": "https://api.github.com/users/RobStallion/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/RobStallion/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "repository_selection": "selected",
+    "access_tokens_url": "https://api.github.com/installations/122511/access_tokens",
+    "repositories_url": "https://api.github.com/installation/repositories",
+    "html_url": "https://github.com/settings/installations/122511",
+    "app_id": 10460,
+    "target_id": 15571853,
+    "target_type": "User",
+    "permissions": {
+      "issues": "write",
+      "pull_requests": "read",
+      "metadata": "read"
+    },
+    "events": [
+      "issues",
+      "issue_comment",
+      "pull_request"
+    ],
+    "created_at": 1522934666,
+    "updated_at": 1522934666,
+    "single_file_name": null
+  },
+  "repository_selection": "selected",
+  "repositories_added": [
+    {
+      "id": 111834414,
+      "name": "spawn_tic_tac_toe",
+      "full_name": "RobStallion/spawn_tic_tac_toe"
+    }
+  ],
+  "repositories_removed": [
+
+  ],
+  "sender": {
+    "login": "RobStallion",
+    "id": 15571853,
+    "avatar_url": "https://avatars2.githubusercontent.com/u/15571853?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/RobStallion",
+    "html_url": "https://github.com/RobStallion",
+    "followers_url": "https://api.github.com/users/RobStallion/followers",
+    "following_url": "https://api.github.com/users/RobStallion/following{/other_user}",
+    "gists_url": "https://api.github.com/users/RobStallion/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/RobStallion/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/RobStallion/subscriptions",
+    "organizations_url": "https://api.github.com/users/RobStallion/orgs",
+    "repos_url": "https://api.github.com/users/RobStallion/repos",
+    "events_url": "https://api.github.com/users/RobStallion/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/RobStallion/received_events",
+    "type": "User",
+    "site_admin": false
+  }
+}
