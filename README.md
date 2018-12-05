@@ -118,7 +118,7 @@ _See below for how to set this up_.
 + `SECRET_KEY_BASE` - a 64bit string used by Phoenix for security
 (_to sign cookies and CSRF tokens_). See below for how to _generate_ yours.
 + `AWS_ACCESS_KEY_ID` - your AWS access key (_get this from your AWS settings_)
-+ `AWS_SECRET_ACCESS_KEY` - your AWS secrete access key
++ `AWS_SECRET_ACCESS_KEY` - your AWS secret access key
 + `S3_BUCKET_NAME` - name of the AWS S3 "bucket" where issue comments
 will be stored.
 
@@ -188,17 +188,6 @@ To allow GitHub to access your `localhost` server you can use `ngrok`.
 7. **Webhook secret** (optional) - leave this blank for now.
 see: [github-backup/issues/76](https://github.com/dwyl/github-backup/issues/76)
 (_please let us know your thoughts on how/when we should prioritise this!_)
-
-Then in your terminal enter `ngrok http 4000`
-to generate an SSH "tunnel" between your localhost:4000 and ngrok.io.
-Copy the ngrok url that appears in your terminal
-to the Github app configuration; e.g: "http://bf541ce5.ngrok.io/event/new"
-
-> _NOTE: you will need to update the webhook URL each time you
-disconnect/connect to ngrok because a different URL is generated every time._
-
-You can read more about webhooks and `ngrok` at:
-https://developer.github.com/webhooks/configuring
 
 #### 2. Set the Necessary Permissions
 
@@ -297,11 +286,11 @@ for the `GITHUB_APP_NAME` variable.
 
 ![github-backup-app-name](https://user-images.githubusercontent.com/194400/37878406-dbaaa2ca-3060-11e8-8c50-14860144ea79.png)
 
-Scroll downd to the "About" section you will find the `ID` of your app e.g: 103
-this is the number that needs to be set for `GITHUB_APP_ID` in your `.env` file.
+Scroll down to the "About" section where you will find the `ID` of your app.
+This is the number that needs to be set for `GITHUB_APP_ID` in your `.env` file.
 
 ![app-about-id](https://user-images.githubusercontent.com/194400/37863366-004a4f02-2f55-11e8-97eb-7d9f8b74ba66.png)
-
+e.g: 103
 
 
 
@@ -316,7 +305,7 @@ mix phx.gen.secret
 _copy-paste_ the _output_ (64bit `String`)
 into your `.env` file after the "equals sign" on the line for `SECRET_KEY_BASE`:
 ```yml
-export SECRET_KEY_BASE=YourSecreteKeyBaseGeneratedUsing-mix_phx.gen.secret
+export SECRET_KEY_BASE=YourSecretKeyBaseGeneratedUsing-mix_phx.gen.secret
 ```
 
 ####  S3 Bucket
@@ -405,6 +394,10 @@ Copy the URL for the next step. (_remember to copy the `https` version_)
 
 Now that your server is running you can update the
 `webhook url` in your app config.
+
+You can read more about webhooks and `ngrok` at:
+https://developer.github.com/webhooks/configuring
+
 On the "GitHub App settings page"
 Find the "Webhook URL" section:
 (_the URL is currently `http://localhost:4000` ..._)
@@ -412,12 +405,16 @@ Find the "Webhook URL" section:
 ![github-backup-webhook-url-before](https://user-images.githubusercontent.com/194400/37879083-7e929d22-306a-11e8-8a86-48afa14158e0.png)
 
 
-_Replace+ the `http://localhost:4000` with your _unique_ `ngrok` url e.g:
+Replace the `http://localhost:4000` with your _unique_ `ngrok` url e.g:
 
 ![github-backup-webhook-url-after](https://user-images.githubusercontent.com/194400/37879098-bf13a33c-306a-11e8-8a29-4d662678931a.png)
 
 
 Scroll down and click on the "Save changes" button:
+
+> _NOTE: you will need to update the webhook URL each time you
+disconnect/connect to ngrok because a different URL is generated every time._
+
 
 ![save-changes](https://user-images.githubusercontent.com/194400/37879104-d327af6c-306a-11e8-82d7-48baada8410d.png)
 
