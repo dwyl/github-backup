@@ -21,7 +21,7 @@ defmodule AppWeb do
     quote do
       use Phoenix.Controller, namespace: AppWeb
       import Plug.Conn
-      import AppWeb.Router.Helpers
+      alias AppWeb.Router.Helpers, as: Routes
       import AppWeb.Gettext
     end
   end
@@ -37,7 +37,7 @@ defmodule AppWeb do
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
-      import AppWeb.Router.Helpers
+      alias AppWeb.Router.Helpers, as: Routes
       import AppWeb.ErrorHelpers
       import AppWeb.Gettext
     end
