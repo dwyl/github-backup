@@ -9,7 +9,7 @@ defmodule App.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
       test_coverage: [tool: ExCoveralls],
-      preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test],
       start_permanent: Mix.env == :prod,
       aliases: aliases(),
       deps: deps()
@@ -35,14 +35,16 @@ defmodule App.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.0"},
+      {:phoenix, "~> 1.4.0"},
       {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:ecto_sql, "~> 3.0"},
+      {:phoenix_ecto, "~> 4.0"},
       {:postgrex, ">= 0.0.0"},
       {:phoenix_html, "~> 2.10"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
+      {:plug, "~> 1.7"},
       {:poison, "~> 3.1"},
       {:httpoison, "~> 1.0"},
       {:excoveralls, "~> 0.8", only: :test},
@@ -54,7 +56,8 @@ defmodule App.Mixfile do
       {:ex_aws_s3, "~> 2.0"},
       {:earmark, "~> 1.2.4"},
       {:timex, "~> 3.1"},
-      {:html_sanitize_ex, "~> 1.3"}
+      {:html_sanitize_ex, "~> 1.3"},
+      {:jason, "~> 1.0"}
     ]
   end
 
@@ -68,7 +71,7 @@ defmodule App.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

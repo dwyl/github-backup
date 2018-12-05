@@ -1,7 +1,9 @@
 defmodule AppWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :app
 
-  socket "/socket", AppWeb.UserSocket
+  socket "/socket", AppWeb.UserSocket,
+    websocket: true,
+    longpoll: false
 
   # Serve at "/" the static files from "priv/static" directory.
   #
