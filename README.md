@@ -7,9 +7,9 @@ An App that helps you **backup** your **GitHub Issues**
 <div align="center">
 
 [![Build Status](https://img.shields.io/travis/dwyl/github-backup/master.svg?style=flat-square)](https://travis-ci.org/dwyl/github-backup)
-[![Inline docs](http://inch-ci.org/github/dwyl/github-backup.svg?style=flat-square)](http://inch-ci.org/github/dwyl/github-backup)
-[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/github-backup/master.svg?style=flat-square)](http://codecov.io/github/dwyl/github-backup?branch=master)
-[![HitCount](http://hits.dwyl.com/dwyl/github-backup.svg)](https://github.com/dwyl/github-backup)
+[![Inline docs](https://inch-ci.org/github/dwyl/github-backup.svg?style=flat-square)](https://inch-ci.org/github/dwyl/github-backup)
+[![codecov.io](https://img.shields.io/codecov/c/github/dwyl/github-backup/master.svg?style=flat-square)](https://codecov.io/github/dwyl/github-backup?branch=master)
+[![HitCount](https://hits.dwyl.com/dwyl/github-backup.svg)](https://github.com/dwyl/github-backup)
 </div>
 
 
